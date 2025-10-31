@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>エステサロン 3周年記念プリペイドカードのご案内</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Gold & White Elegance -->
+    <!-- Application Structure Plan: アプリケーションは、まずヒーローセクションでプリペイドカードの主要な利点（「お得」と「自由」）を提示し、ユーザーの関心を引きます。次に、インタラクティブなメニューセクションを配置。ここでは、カテゴリー（フェイシャル、ボディ等）でメニューを絞り込めるフィルターボタンを設置し、ユーザーが関心のあるサービスを簡単に見つけられるようにします。選択されたカテゴリーのメニューはカード形式で表示され、同時にそのカテゴリーの「通常価格」と「プリペイド価格」を比較するバーチャートが動的に更新されます。この構造は、ユーザーが情報を段階的に、かつ能動的に探索できるように設計されており、単なる価格表ではなく、価値を体験できるツールとしての役割を果たします。最終的に、具体的な節約額を視覚的に示すことで、購入意欲を高めることを目的としています。 -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: プリペイドカードのメリット（自由選択、お得な価格） -> Goal: Inform -> Viz/Presentation Method: アイコン付きの特長セクション -> Interaction: なし -> Justification: 主要な価値提案を簡潔かつ視覚的に伝えるため。
+        - Report Info: カテゴリー別のサービスメニューと価格（通常・プリペイド） -> Goal: Compare, Organize -> Viz/Presentation Method: カテゴリーフィルターボタン、サービス詳細カード、動的バーチャート（Chart.js） -> Interaction: フィルターボタンをクリックすると、表示されるサービスカードとバーチャートの内容が連動して更新される。 -> Justification: 膨大なメニュー情報をカテゴリー別に整理し、ユーザーが必要な情報に素早くアクセスできるようにするため。価格差をチャートで視覚化することにより、「お得感」を直感的に、かつ強力に訴求する。Chart.jsのCanvasレンダリングは、SVGを使用しないという要件に準拠しています。
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        :root {
+            --bg-main: #FCFCFA;
+            --text-dark: #3D342E;
+            --gold-accent: #C0A062;
+            --gold-light-bg: #F5F1E9;
+            --white: #FFFFFF;
+        }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 450px;
+                max-height: 500px;
+            }
+        }
+        .active-filter {
+            background-color: var(--gold-accent) !important;
+            color: var(--white) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .gold-text { color: var(--gold-accent); }
+        .gold-bg { background-color: var(--gold-accent); }
+        .gold-border { border-color: var(--gold-accent); }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <div class="mb-4">
+                <span class="inline-block bg-gradient-to-r from-yellow-300 via-[var(--gold-accent)] to-yellow-300 text-white text-lg md:text-xl font-bold px-6 py-2 rounded-full shadow-lg">
+                    ✨ 3周年記念 特別キャンペーン ✨
+                </span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold gold-text mb-4">もっと自由に、もっとお得に</h1>
+            <p class="text-xl md:text-2xl font-light text-gray-700">あなただけの美しさを引き出す、今だけの特別なプリペイドカードのご案内</p>
+        </header>
+
+        <main>
+            <section id="merits" class="mb-16">
+                 <div class="max-w-4xl mx-auto text-center mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4 gold-text">プリペイドカードの魅力</h2>
+                    <p class="text-md md:text-lg text-gray-600">プリペイドカードをご利用いただくことで、通常よりもお得に、そしてその日のご気分やコンディションに合わせて、お客様に最適な施術を自由にお選びいただけます。計画的に、そして柔軟に、あなたの「キレイ」をサポートします。</p>
+                 </div>
+                <div class="flex flex-col md:flex-row justify-center gap-8 max-w-5xl mx-auto">
+                    <div class="bg-white rounded-lg shadow-lg p-8 w-full md:w-1/2 text-center transform hover:scale-105 transition-transform duration-300">
+                        <div class="text-4xl mb-4">✨</div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">メニューを自由に選べる</h3>
+                        <p class="text-gray-600">その日の気分やお肌の状態に合わせて、豊富なメニューやオプションから自由に組み合わせをお選びいただけます。</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg p-8 w-full md:w-1/2 text-center transform hover:scale-105 transition-transform duration-300">
+                        <div class="text-4xl mb-4">💰</div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">通常よりお得な価格で</h3>
+                        <p class="text-gray-600">すべてのメニューを通常価格よりもお得な特別価格でご利用いただけます。美しさへの投資を、より賢く。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="prepaid-plans" class="mb-20">
+                <div class="text-center mb-12">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4 gold-text">3周年記念 ご購入プラン</h2>
+                    <p class="text-md md:text-lg text-gray-600 max-w-4xl mx-auto">サロンの3周年を記念して、お客様の美容プランに合わせたお得な4つの特別プランをご用意しました。</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto items-start">
+                    
+                    <div class="relative bg-white rounded-2xl shadow-2xl p-8 border-2 gold-border transform lg:scale-110">
+                        <div class="absolute -top-4 right-4 gold-bg text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg transform rotate-6">一番人気！</div>
+                        <div class="text-center">
+                             <div class="text-5xl mb-4">🌟</div>
+                            <h3 class="text-2xl font-bold text-gray-800">50,000円プラン</h3>
+                            <p class="text-5xl font-extrabold gold-text my-4">55,000<span class="text-2xl font-semibold">円分</span></p>
+                            <p class="text-lg font-semibold gold-bg text-white inline-block px-3 py-1 rounded-full mb-6">10%還元！ 5,000円お得</p>
+                            <p class="text-2xl font-bold var(--text-dark) mt-4">¥50,000</p>
+                        </div>
+                        <div class="mt-8 pt-6 border-t gold-border">
+                            <h4 class="font-semibold text-center mb-3 gold-text">【ご利用イメージ】</h4>
+                            <div class="text-sm text-gray-700 bg-[var(--gold-light-bg)] p-4 rounded-lg">
+                                <p class="font-bold mb-2">月1回のご褒美に✨ 集中美肌コース (約3ヶ月分)</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><span class="font-semibold">1ヶ月目:</span> ハーブピーリング(剥離なし) + LED鎮静パック</li>
+                                    <li><span class="font-semibold">2ヶ月目:</span> 小顔超音波(目元あり) + ヘッドマッサージ</li>
+                                    <li><span class="font-semibold">3ヶ月目:</span> 美白フォトフェイシャル + 毛穴吸引</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-200 hover:gold-border hover:shadow-2xl transition-all duration-300 transform lg:hover:scale-105 mt-8 lg:mt-0">
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">💎</div>
+                            <h3 class="text-2xl font-bold text-gray-800">80,000円プラン</h3>
+                            <p class="text-4xl font-bold gold-text my-4">88,000<span class="text-xl font-semibold">円分</span></p>
+                            <p class="text-md font-semibold bg-gray-200 text-gray-700 inline-block px-3 py-1 rounded-full mb-6">10%還元！ 8,000円お得</p>
+                            <p class="text-xl font-bold var(--text-dark) mt-4">¥80,000</p>
+                        </div>
+                         <div class="mt-8 pt-6 border-t border-gray-200">
+                            <h4 class="font-semibold text-center mb-3 gold-text">【ご利用イメージ】</h4>
+                            <div class="text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
+                                <p class="font-bold mb-2">2週に1回の本格改善！全身トータルケア (約4〜5ヶ月)</p>
+                                <p>フェイシャルとボディを自由に組み合わせ、気になる箇所を徹底ケア。本格的な肌質改善やボディメイクを目指す方におすすめです。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">💌</div>
+                            <h3 class="text-xl font-bold text-gray-800">30,000円プラン</h3>
+                            <p class="text-3xl font-bold gold-text my-4">30,000<span class="text-lg font-semibold">円分</span></p>
+                            <p class="text-md text-gray-500 h-8 flex items-center justify-center mb-4">※特典は付きません</p>
+                            <p class="text-xl font-bold var(--text-dark) mt-4">¥30,000</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">🎁</div>
+                            <h3 class="text-xl font-bold text-gray-800">100,000円プラン</h3>
+                            <p class="text-3xl font-bold gold-text my-4">100,000<span class="text-lg font-semibold">円分</span></p>
+                            <p class="text-md font-semibold gold-text h-8 flex items-center justify-center mb-4">お好きなコース1回プレゼント</p>
+                            <p class="text-xl font-bold var(--text-dark) mt-4">¥100,000</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="menu-explorer">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4 gold-text">料金シミュレーション</h2>
+                    <p class="text-md md:text-lg text-gray-600 max-w-4xl mx-auto">下のカテゴリーボタンをクリックして、メニューと価格をご確認ください。選択したカテゴリーのメニューごとに、通常価格とプリペイド価格の差をグラフでご確認いただけます。どれだけお得になるか、ぜひご自身で体験してみてください。</p>
+                </div>
+                
+                <div id="filters" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                    <button data-category="フェイシャル" class="filter-btn active-filter px-4 py-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition">フェイシャル</button>
+                    <button data-category="ボディ" class="filter-btn px-4 py-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition">ボディ</button>
+                    <button data-category="脱毛" class="filter-btn px-4 py-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition">脱毛</button>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-xl p-4 md:p-8 mb-12">
+                    <div class="chart-container">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+
+                <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </section>
+
+            <section id="exclusive-options" class="mt-20">
+                <div class="text-center mb-12">
+                    <div class="text-4xl mb-4">💎</div>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4 gold-text">会員様限定 特別オプション</h2>
+                    <p class="text-md md:text-lg text-gray-600 max-w-4xl mx-auto">プリペイドカードをお持ちの方だけがご利用いただける、特別なオプションメニューです。<br>いつものお手入れにプラスして、ワンランク上のケアをご体験ください。</p>
+                </div>
+                <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-16 py-8 border-t gold-border">
+            <p class="text-gray-700">ご興味をお持ちいただけましたら、お気軽にスタッフまでお声がけください。</p>
+            <p class="text-sm text-gray-500 mt-2">Your Salon Name | © 2025</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const menuData = [
+            { category: 'フェイシャル', name: 'ハーブピーリング(剥離なし)', prepaid: 11000, regular: 15000 },
+            { category: 'フェイシャル', name: 'ハーブピーリング(剥離あり)', prepaid: 16000, regular: 20000 },
+            { category: 'フェイシャル', name: '小顔超音波(目元なし)', prepaid: 8800, regular: 12500 },
+            { category: 'フェイシャル', name: '小顔超音波(目元あり)', prepaid: 9900, regular: 13500 },
+            { category: 'フェイシャル', name: '毛穴エクストラクション', prepaid: 9900, regular: 16000 },
+            { category: 'フェイシャル', name: 'ハイドラフェイシャル', prepaid: 7700, regular: 11000 },
+            { category: 'フェイシャル', name: '美白フォトフェイシャル', prepaid: 8800, regular: 12000 },
+            { category: 'フェイシャル', name: 'フェイス&デコルテリンパケア', prepaid: 6600, regular: 9900 },
+            { category: 'フェイシャル', name: '小顔コルギ', prepaid: 8800, regular: 13500 },
+            { category: 'フェイシャル', name: 'アンチエイジングLED', prepaid: 7700, regular: 11000 },
+            { category: 'ボディ', name: '全身オイルマッサージ', prepaid: 8800, regular: 11000 },
+            { category: 'ボディ', name: 'トランスビート(15分)', prepaid: 1000, regular: 4000 },
+            { category: 'ボディ', name: 'トランスビート(30分)', prepaid: 2000, regular: 6000 },
+            { category: '脱毛', name: '全身脱毛(VIO・顔なし)', prepaid: 11000, regular: 15000 },
+            { category: '脱毛', name: '全身脱毛(VIO or顔込み)', prepaid: 13000, regular: 17000 },
+            { category: '脱毛', name: '全身脱毛(VIO・顔込み)', prepaid: 16000, regular: 20000 },
+            { category: '脱毛', name: 'VIO脱毛', prepaid: 5500, regular: 7160 },
+            { category: '脱毛', name: '顔脱毛', prepaid: 5500, regular: 7160 },
+            { category: '脱毛', name: 'Sパーツ', prepaid: 2200, regular: 2200 },
+            { category: '脱毛', name: 'Lパーツ', prepaid: 4400, regular: 4400 },
+            { category: 'オプション', name: 'フェイス&デコルテケア', prepaid: 2500, regular: 2500 },
+            { category: 'オプション', name: 'ヘッドマッサージ', prepaid: 1500, regular: 1500 },
+            { category: 'オプション', name: 'ハイドロジェリーマスク', prepaid: 3000, regular: 3000 },
+            { category: 'オプション', name: '毛穴吸引', prepaid: 3000, regular: 3000 },
+            { category: 'オプション', name: '部分ハーブピーリング', prepaid: 5500, regular: 5500 },
+            { category: 'オプション', name: 'LED鎮静パック', prepaid: 2000, regular: 2000 }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const filtersContainer = document.getElementById('filters');
+            const menuGrid = document.getElementById('menu-grid');
+            const optionsGrid = document.getElementById('options-grid');
+            const chartCanvas = document.getElementById('priceChart').getContext('2d');
+            let priceChart;
+            
+            const simulationMenuData = menuData.filter(item => item.category !== 'オプション');
+            const exclusiveOptionsData = menuData.filter(item => item.category === 'オプション');
+
+            const formatCurrency = (amount) => {
+                 if (amount === null || typeof amount === 'undefined') return '---';
+                return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(amount);
+            };
+            
+            const renderMenu = (category) => {
+                const filteredData = simulationMenuData.filter(item => item.category === category);
+                menuGrid.innerHTML = '';
+                filteredData.forEach(item => {
+                    const savings = (item.regular && item.prepaid) ? item.regular - item.prepaid : 0;
+                    const card = `
+                        <div class="bg-white rounded-lg shadow-md p-6 border-l-4 gold-border transition-shadow hover:shadow-lg">
+                            <h4 class="font-bold text-lg text-gray-800">${item.name}</h4>
+                            <div class="mt-4">
+                                <div class="flex justify-between items-baseline">
+                                    <span class="text-sm text-gray-500">プリペイド価格</span>
+                                    <span class="font-bold text-xl gold-text">${formatCurrency(item.prepaid)}</span>
+                                </div>
+                                ${item.regular ? `
+                                <div class="flex justify-between items-baseline mt-1">
+                                    <span class="text-sm text-gray-500">通常価格</span>
+                                    <span class="text-gray-500 ${item.regular > item.prepaid ? 'line-through' : ''}">${formatCurrency(item.regular)}</span>
+                                </div>
+                                ` : ''}
+                            </div>
+                            ${savings > 0 ? `
+                            <div class="mt-4 pt-4 border-t border-gray-200 text-right">
+                                <span class="text-sm font-semibold gold-text">お得額: ${formatCurrency(savings)}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    menuGrid.insertAdjacentHTML('beforeend', card);
+                });
+            };
+
+            const renderExclusiveOptions = () => {
+                optionsGrid.innerHTML = '';
+                exclusiveOptionsData.forEach(item => {
+                    const card = `
+                        <div class="bg-[var(--gold-light-bg)] rounded-lg shadow-md p-6 border-t-4 gold-border text-center transition-transform hover:scale-105">
+                            <h4 class="font-bold text-lg text-gray-800">${item.name}</h4>
+                            <p class="font-bold text-2xl gold-text mt-4">${formatCurrency(item.prepaid)}</p>
+                        </div>
+                    `;
+                    optionsGrid.insertAdjacentHTML('beforeend', card);
+                });
+            };
+
+            const updateChart = (category) => {
+                const filteredData = simulationMenuData.filter(item => item.category === category && item.regular);
+                const labels = filteredData.map(item => item.name.length > 10 ? item.name.substring(0, 10) + '...' : item.name);
+                const prepaidPrices = filteredData.map(item => item.prepaid);
+                const regularPrices = filteredData.map(item => item.regular);
+
+                const chartData = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '通常価格',
+                            data: regularPrices,
+                            backgroundColor: '#E0E0E0',
+                            borderColor: '#BDBDBD',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'プリペイド価格',
+                            data: prepaidPrices,
+                            backgroundColor: 'var(--gold-accent)',
+                            borderColor: 'var(--gold-accent)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }
+                    ]
+                };
+
+                if (priceChart) {
+                    priceChart.data = chartData;
+                    priceChart.update();
+                } else {
+                    priceChart = new Chart(chartCanvas, {
+                        type: 'bar',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: `${category}メニュー 価格比較`,
+                                    font: {
+                                        size: 18,
+                                        family: "'Noto Sans JP', sans-serif"
+                                    },
+                                    color: 'var(--text-dark)',
+                                    padding: {
+                                        bottom: 20
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += formatCurrency(context.parsed.y);
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value, index, values) {
+                                            return formatCurrency(value);
+                                        },
+                                        color: 'var(--text-dark)'
+                                    },
+                                    grid: {
+                                      color: '#F1F1F1'
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        color: 'var(--text-dark)'
+                                    },
+                                    grid: {
+                                      display: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+                 priceChart.options.plugins.title.text = `${category}メニュー 価格比較`;
+                 priceChart.update();
+            };
+
+            filtersContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-btn')) {
+                    const category = e.target.dataset.category;
+                    
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('active-filter');
+                    });
+                    e.target.classList.add('active-filter');
+
+                    renderMenu(category);
+                    updateChart(category);
+                }
+            });
+
+            const initialCategory = 'フェイシャル';
+            renderMenu(initialCategory);
+            updateChart(initialCategory);
+            renderExclusiveOptions();
+        });
+    </script>
+</body>
+</html>
+
+
+
+
