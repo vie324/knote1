@@ -11,6 +11,9 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- html2canvas (Screenshot Library) -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
 
@@ -78,10 +81,10 @@
     <!-- LEFT PANEL: STAFF CONTROLS (INPUT)        -->
     <!-- ========================================== -->
     <aside class="w-full md:w-1/2 lg:w-5/12 bg-white border-r border-brand-200 h-full flex flex-col shadow-lg z-10">
-        <div class="p-4 bg-brand-600 text-white flex justify-between items-center shadow-md">
+        <div class="p-4 bg-brand-600 text-white flex justify-between items-center shadow-md shrink-0">
             <div>
                 <h1 class="font-bold text-lg">🌿 レポート作成ツール</h1>
-                <p class="text-xs text-brand-100">施術後に設定し、右側の画面をスクショして送付</p>
+                <p class="text-xs text-brand-100">設定後に「画像を保存」で書き出し</p>
             </div>
             <button onclick="resetForm()" class="text-xs bg-brand-800 px-3 py-1 rounded hover:bg-brand-900 transition border border-brand-500">リセット</button>
         </div>
@@ -165,7 +168,7 @@
 
             <!-- 5. Recommended Stretches -->
             <section>
-                <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">⑤ 宿題ストレッチ (最大2つ推奨)</h3>
+                <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">⑤ 宿題ストレッチ</h3>
                 <div id="stretchSelectionArea" class="space-y-4">
                     <!-- Populated by JS -->
                 </div>
@@ -177,86 +180,104 @@
     <!-- ========================================== -->
     <!-- RIGHT PANEL: PREVIEW (OUTPUT TARGET)      -->
     <!-- ========================================== -->
-    <main class="w-full md:w-1/2 lg:w-7/12 bg-gray-100 flex items-center justify-center p-4 md:p-8 overflow-y-auto">
+    <!-- FIX: Changed from flex-center to block/margin-auto + padding to allow scrolling of long content -->
+    <main class="w-full md:w-1/2 lg:w-7/12 bg-gray-100 h-full overflow-y-auto custom-scroll relative">
         
-        <!-- PHONE CONTAINER (The part to screenshot) -->
-        <div id="captureArea" class="bg-white w-full max-w-[400px] shadow-2xl overflow-hidden relative text-gray-800" style="min-height: 700px; border-radius: 20px;">
+        <div class="flex flex-col items-center justify-start min-h-full p-4 md:p-8 pb-20">
             
-            <!-- Top Decoration -->
-            <div class="bg-gradient-to-r from-brand-300 to-brand-500 h-3 w-full"></div>
-
-            <!-- Header -->
-            <div class="p-6 pb-4 text-center bg-brand-50/50">
-                <p class="text-[10px] text-brand-500 font-bold tracking-[0.2em] uppercase mb-1">Personal After Care Sheet</p>
-                <h2 class="text-2xl font-bold text-gray-700 mb-1" id="previewName">様</h2>
-                <p class="text-xs text-brand-300 font-medium" id="previewDate">2023.00.00</p>
+            <!-- DOWNLOAD BUTTON (Sticky position to stay visible) -->
+            <div class="sticky top-0 z-50 w-full max-w-[400px] flex justify-end mb-2 pointer-events-none">
+                <div class="pointer-events-auto">
+                    <button onclick="downloadImage()" class="flex items-center gap-2 bg-brand-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-brand-500 hover:shadow-xl transition transform hover:-translate-y-0.5 font-bold text-sm border-2 border-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        画像を保存
+                    </button>
+                    <p id="saveMsg" class="text-xs text-brand-600 text-center mt-1 opacity-0 transition bg-white/80 rounded px-1">保存しました！</p>
+                </div>
             </div>
 
-            <!-- 1. Today's Care (EMPHASIZED) -->
-            <div class="px-6 mb-6">
-                <div class="relative py-4">
-                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                        <div class="w-full border-t border-brand-100"></div>
-                    </div>
-                    <div class="relative flex justify-center">
-                        <span class="px-2 bg-white text-xs font-bold text-brand-400 uppercase tracking-widest">Today's Menu</span>
-                    </div>
-                </div>
+            <!-- PHONE CONTAINER (The part to screenshot) -->
+            <!-- FIX: Removed fixed height constraint so it grows with content. min-h is fine. -->
+            <div id="captureArea" class="bg-white w-full max-w-[400px] shadow-2xl overflow-hidden relative text-gray-800 h-auto" style="min-height: 700px; border-radius: 20px;">
                 
-                <!-- Emphasized Menu Container -->
-                <div id="previewMenu" class="flex flex-wrap justify-center gap-3">
-                    <!-- Badges injected here with stronger styling -->
-                </div>
-            </div>
+                <!-- Top Decoration -->
+                <div class="bg-gradient-to-r from-brand-300 to-brand-500 h-3 w-full"></div>
 
-            <!-- 2. Body Analysis (Chart) -->
-            <div class="px-6 mb-6">
-                <h4 class="text-xs font-bold text-brand-400 mb-2 text-center tracking-widest uppercase">Body Balance</h4>
-                <div class="bg-brand-50/50 rounded-2xl p-4 chart-wrapper border border-brand-50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
-                    <!-- Chart Container for Chart.js -->
-                    <div class="chart-container" style="position: relative; width: 100%; height: 100%;">
-                        <canvas id="bodyChart"></canvas>
+                <!-- Header -->
+                <div class="p-6 pb-4 text-center bg-brand-50/50">
+                    <p class="text-[10px] text-brand-500 font-bold tracking-[0.2em] uppercase mb-1">Personal After Care Sheet</p>
+                    <h2 class="text-2xl font-bold text-gray-700 mb-1" id="previewName">様</h2>
+                    <p class="text-xs text-brand-300 font-medium" id="previewDate">2023.00.00</p>
+                </div>
+
+                <!-- 1. Today's Care (EMPHASIZED) -->
+                <div class="px-6 mb-6">
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                            <div class="w-full border-t border-brand-100"></div>
+                        </div>
+                        <div class="relative flex justify-center">
+                            <span class="px-2 bg-white text-xs font-bold text-brand-400 uppercase tracking-widest">Today's Menu</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Emphasized Menu Container -->
+                    <div id="previewMenu" class="flex flex-wrap justify-center gap-3">
+                        <!-- Badges injected here with stronger styling -->
                     </div>
                 </div>
-                <div class="mt-3 flex justify-between text-[10px] text-brand-400 px-4">
-                    <span>Previous</span>
-                    <span>Current</span>
-                    <span>Goal</span>
+
+                <!-- 2. Body Analysis (Chart) -->
+                <div class="px-6 mb-6">
+                    <h4 class="text-xs font-bold text-brand-400 mb-2 text-center tracking-widest uppercase">Body Balance</h4>
+                    <div class="bg-brand-50/50 rounded-2xl p-4 chart-wrapper border border-brand-50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
+                        <!-- Chart Container for Chart.js -->
+                        <div class="chart-container" style="position: relative; width: 100%; height: 100%;">
+                            <canvas id="bodyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex justify-between text-[10px] text-brand-400 px-4">
+                        <span>Previous</span>
+                        <span>Current</span>
+                        <span>Goal</span>
+                    </div>
                 </div>
+
+                <!-- 3. Coach Feedback -->
+                <div class="px-6 mb-8">
+                    <h4 class="text-xs font-bold text-brand-400 mb-3 text-center tracking-widest uppercase">Feedback & Goal</h4>
+                    <div class="bg-white relative">
+                        <!-- Quotation mark decoration -->
+                        <span class="absolute -top-2 -left-1 text-4xl text-brand-200 opacity-50 font-serif leading-none">“</span>
+                        <p id="previewComment" class="text-sm leading-relaxed text-gray-600 whitespace-pre-wrap pl-6 border-l-2 border-brand-300 py-1">
+                            本日は施術お疲れ様でした。
+                            骨盤周りの動きは良くなっています！次回は肩甲骨周りをさらに広げていきましょう。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4. Home Work (Stretches) -->
+                <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white p-6 pb-10 min-h-[220px]">
+                    <div class="flex items-center justify-center gap-2 mb-6">
+                        <span class="text-lg bg-white/20 w-8 h-8 flex items-center justify-center rounded-full text-white">🧘‍♀️</span>
+                        <h4 class="font-bold tracking-[0.2em] text-sm text-brand-100">HOME CARE</h4>
+                    </div>
+                    
+                    <div id="previewStretches" class="space-y-4">
+                        <!-- Stretch Cards injected here -->
+                    </div>
+
+                    <div class="mt-8 text-center border-t border-white/10 pt-4">
+                         <p class="text-[10px] text-brand-200 opacity-90">
+                            美しさは日々の積み重ねから✨<br>
+                            ご不明点はLINEにていつでもご相談ください。
+                        </p>
+                    </div>
+                </div>
+
             </div>
-
-            <!-- 3. Coach Feedback -->
-            <div class="px-6 mb-8">
-                <h4 class="text-xs font-bold text-brand-400 mb-3 text-center tracking-widest uppercase">Feedback & Goal</h4>
-                <div class="bg-white relative">
-                    <!-- Quotation mark decoration -->
-                    <span class="absolute -top-2 -left-1 text-4xl text-brand-200 opacity-50 font-serif leading-none">“</span>
-                    <p id="previewComment" class="text-sm leading-relaxed text-gray-600 whitespace-pre-wrap pl-6 border-l-2 border-brand-300 py-1">
-                        本日は施術お疲れ様でした。
-                        骨盤周りの動きは良くなっています！次回は肩甲骨周りをさらに広げていきましょう。
-                    </p>
-                </div>
-            </div>
-
-            <!-- 4. Home Work (Stretches) -->
-            <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white p-6 pb-10 rounded-b-[20px] min-h-[220px]">
-                <div class="flex items-center justify-center gap-2 mb-6">
-                    <span class="text-lg bg-white/20 w-8 h-8 flex items-center justify-center rounded-full text-white">🧘‍♀️</span>
-                    <h4 class="font-bold tracking-[0.2em] text-sm text-brand-100">HOME CARE</h4>
-                </div>
-                
-                <div id="previewStretches" class="space-y-4">
-                    <!-- Stretch Cards injected here -->
-                </div>
-
-                <div class="mt-8 text-center border-t border-white/10 pt-4">
-                     <p class="text-[10px] text-brand-200 opacity-90">
-                        美しさは日々の積み重ねから✨<br>
-                        ご不明点はLINEにていつでもご相談ください。
-                    </p>
-                </div>
-            </div>
-
         </div>
     </main>
 
@@ -566,6 +587,42 @@
                 updateChartData();
                 updateUI();
             }
+        }
+
+        // ==========================================
+        // DOWNLOAD IMAGE FUNCTION
+        // ==========================================
+        function downloadImage() {
+            const element = document.getElementById('captureArea');
+            const msg = document.getElementById('saveMsg');
+            
+            // Visual Feedback
+            msg.style.opacity = '1';
+            msg.innerText = '生成中...';
+
+            html2canvas(element, {
+                scale: 2, // High resolution (Retina)
+                backgroundColor: '#ffffff', // Ensure white background
+                useCORS: true // Allow loading cross-origin images if added later
+            }).then(canvas => {
+                // Trigger Download
+                const link = document.createElement('a');
+                const name = document.getElementById('customerName').value || 'Customer';
+                const date = document.getElementById('visitDate').value || 'Date';
+                
+                link.download = `AfterCare_${name}_${date}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                // Finish Feedback
+                msg.innerText = '保存しました！';
+                setTimeout(() => {
+                    msg.style.opacity = '0';
+                }, 2000);
+            }).catch(err => {
+                console.error(err);
+                msg.innerText = 'エラーが発生しました';
+            });
         }
 
     </script>
