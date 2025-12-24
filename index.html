@@ -73,213 +73,233 @@
         }
     </style>
 </head>
-<body class="text-gray-700 h-screen overflow-hidden flex flex-col md:flex-row font-sans">
+<body class="text-gray-700 h-screen overflow-hidden flex flex-col font-sans">
 
     <!-- Chosen Palette: Gentle Green (Sage/Nature) for healing and calm. -->
 
     <!-- ========================================== -->
-    <!-- LEFT PANEL: STAFF CONTROLS (INPUT)        -->
+    <!-- MOBILE TABS (Visible only on small screens) -->
     <!-- ========================================== -->
-    <aside class="w-full md:w-1/2 lg:w-5/12 bg-white border-r border-brand-200 h-full flex flex-col shadow-lg z-10">
-        <div class="p-4 bg-brand-600 text-white flex justify-between items-center shadow-md shrink-0">
-            <div>
-                <h1 class="font-bold text-lg">🌿 レポート作成ツール</h1>
-                <p class="text-xs text-brand-100">設定後に「画像を保存」で書き出し</p>
-            </div>
-            <button onclick="resetForm()" class="text-xs bg-brand-800 px-3 py-1 rounded hover:bg-brand-900 transition border border-brand-500">リセット</button>
-        </div>
+    <div class="md:hidden flex bg-white border-b border-brand-200 z-50 shrink-0 shadow-sm">
+        <button onclick="switchTab('edit')" id="tab-edit" class="flex-1 py-3 text-sm font-bold text-brand-600 border-b-4 border-brand-500 bg-brand-50 transition-colors">
+            ✏️ 入力・編集
+        </button>
+        <button onclick="switchTab('preview')" id="tab-preview" class="flex-1 py-3 text-sm font-bold text-gray-400 border-b-4 border-transparent hover:bg-gray-50 transition-colors">
+            📱 プレビュー確認
+        </button>
+    </div>
 
-        <div class="flex-1 overflow-y-auto p-6 custom-scroll space-y-8">
-            
-            <!-- 1. Customer Info -->
-            <section>
-                <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">① 基本情報</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold mb-1 text-gray-500">お客様名</label>
-                        <input type="text" id="customerName" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="例: 山田 花子" oninput="updateUI()">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold mb-1 text-gray-500">来店日</label>
-                        <input type="date" id="visitDate" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none" oninput="updateUI()">
-                    </div>
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+
+        <!-- ========================================== -->
+        <!-- LEFT PANEL: STAFF CONTROLS (INPUT)        -->
+        <!-- ========================================== -->
+        <!-- Added ID for toggling -->
+        <aside id="panel-edit" class="w-full md:w-1/2 lg:w-5/12 bg-white border-r border-brand-200 h-full flex flex-col shadow-lg z-10 absolute md:relative inset-0 md:inset-auto overflow-hidden">
+            <div class="p-4 bg-brand-600 text-white flex justify-between items-center shadow-md shrink-0">
+                <div>
+                    <h1 class="font-bold text-lg">🌿 レポート作成</h1>
+                    <p class="text-xs text-brand-100 md:block hidden">設定後に右側で保存</p>
+                    <p class="text-xs text-brand-100 md:hidden block">入力後に「プレビュー」へ</p>
                 </div>
-            </section>
-
-            <!-- 2. Today's Menu -->
-            <section>
-                <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">② 本日の施術 (選択)</h3>
-                <div class="grid grid-cols-2 gap-2 text-sm">
-                    <label class="flex items-center space-x-2 cursor-pointer bg-brand-50 p-2 rounded border border-transparent hover:border-brand-200 transition"><input type="checkbox" class="menu-check form-checkbox text-brand-600 accent-brand-600" value="骨盤矯正" checked onchange="updateUI()"> <span>骨盤矯正</span></label>
-                    <label class="flex items-center space-x-2 cursor-pointer bg-brand-50 p-2 rounded border border-transparent hover:border-brand-200 transition"><input type="checkbox" class="menu-check form-checkbox text-brand-600 accent-brand-600" value="姿勢矯正" checked onchange="updateUI()"> <span>姿勢矯正</span></label>
-                    <label class="flex items-center space-x-2 cursor-pointer bg-brand-50 p-2 rounded border border-transparent hover:border-brand-200 transition"><input type="checkbox" class="menu-check form-checkbox text-brand-600 accent-brand-600" value="小顔矯正" onchange="updateUI()"> <span>小顔矯正</span></label>
-                    <label class="flex items-center space-x-2 cursor-pointer bg-brand-50 p-2 rounded border border-transparent hover:border-brand-200 transition"><input type="checkbox" class="menu-check form-checkbox text-brand-600 accent-brand-600" value="ほぐし" onchange="updateUI()"> <span>ほぐし</span></label>
-                </div>
-            </section>
-
-            <!-- 3. Current State (Chart Data) -->
-            <section>
-                <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">③ 現在の状態・課題 (1-5点)</h3>
-                <p class="text-xs text-gray-500 mb-2">※数値を変更するとレーダーチャートに反映されます</p>
-                <div class="space-y-3 bg-white p-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm w-24 text-gray-600">姿勢・バランス</label>
-                        <input type="range" id="scorePosture" min="1" max="5" step="1" value="3" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                        <span id="valPosture" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm w-24 text-gray-600">柔軟性・可動域</label>
-                        <input type="range" id="scoreFlex" min="1" max="5" step="1" value="2" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                        <span id="valFlex" class="text-sm font-bold w-4 text-center text-brand-600">2</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm w-24 text-gray-600">巡り・代謝</label>
-                        <input type="range" id="scoreFlow" min="1" max="5" step="1" value="3" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                        <span id="valFlow" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm w-24 text-gray-600">筋出力・安定</label>
-                        <input type="range" id="scoreMuscle" min="1" max="5" step="1" value="4" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                        <span id="valMuscle" class="text-sm font-bold w-4 text-center text-brand-600">4</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm w-24 text-gray-600">顔・頭部の軽さ</label>
-                        <input type="range" id="scoreFace" min="1" max="5" step="1" value="3" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                        <span id="valFace" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 4. Message & Goal -->
-            <section>
-                <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">④ コメント / 次の目標</h3>
-                <div class="mb-3">
-                    <label class="block text-xs font-bold mb-1 text-gray-500">テンプレート選択</label>
-                    <select id="msgTemplate" class="w-full border border-gray-300 rounded p-2 text-sm bg-white text-gray-600" onchange="applyTemplate()">
-                        <option value="">カスタム入力...</option>
-                        <option value="improvement">【継続】姿勢改善・称賛パターン</option>
-                        <option value="cold">【季節】冷え・むくみケアパターン</option>
-                        <option value="face">【顔】小顔・食いしばりケアパターン</option>
-                        <option value="first">【初回/初期】立ち方・意識付けパターン</option>
-                    </select>
-                </div>
-                <textarea id="coachComment" class="w-full border border-gray-300 rounded p-2 text-sm h-24 focus:ring-2 focus:ring-brand-500 outline-none resize-none" placeholder="ここにお客様へのフィードバックを入力..." oninput="updateUI()"></textarea>
-            </section>
-
-            <!-- 5. Recommended Stretches -->
-            <section>
-                <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">⑤ 宿題ストレッチ</h3>
-                <div id="stretchSelectionArea" class="space-y-4">
-                    <!-- Populated by JS -->
-                </div>
-            </section>
-
-        </div>
-    </aside>
-
-    <!-- ========================================== -->
-    <!-- RIGHT PANEL: PREVIEW (OUTPUT TARGET)      -->
-    <!-- ========================================== -->
-    <!-- FIX: Changed from flex-center to block/margin-auto + padding to allow scrolling of long content -->
-    <main class="w-full md:w-1/2 lg:w-7/12 bg-gray-100 h-full overflow-y-auto custom-scroll relative">
-        
-        <div class="flex flex-col items-center justify-start min-h-full p-4 md:p-8 pb-20">
-            
-            <!-- DOWNLOAD BUTTON (Sticky position to stay visible) -->
-            <div class="sticky top-0 z-50 w-full max-w-[400px] flex justify-end mb-2 pointer-events-none">
-                <div class="pointer-events-auto">
-                    <button onclick="downloadImage()" class="flex items-center gap-2 bg-brand-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-brand-500 hover:shadow-xl transition transform hover:-translate-y-0.5 font-bold text-sm border-2 border-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        画像を保存
-                    </button>
-                    <p id="saveMsg" class="text-xs text-brand-600 text-center mt-1 opacity-0 transition bg-white/80 rounded px-1">保存しました！</p>
-                </div>
+                <button onclick="resetForm()" class="text-xs bg-brand-800 px-3 py-1 rounded hover:bg-brand-900 transition border border-brand-500">リセット</button>
             </div>
 
-            <!-- PHONE CONTAINER (The part to screenshot) -->
-            <!-- FIX: Removed fixed height constraint so it grows with content. min-h is fine. -->
-            <div id="captureArea" class="bg-white w-full max-w-[400px] shadow-2xl overflow-hidden relative text-gray-800 h-auto" style="min-height: 700px; border-radius: 20px;">
+            <div class="flex-1 overflow-y-auto p-6 custom-scroll space-y-8 pb-20 md:pb-6">
                 
-                <!-- Top Decoration -->
-                <div class="bg-gradient-to-r from-brand-300 to-brand-500 h-3 w-full"></div>
-
-                <!-- Header -->
-                <div class="p-6 pb-4 text-center bg-brand-50/50">
-                    <p class="text-[10px] text-brand-500 font-bold tracking-[0.2em] uppercase mb-1">Personal After Care Sheet</p>
-                    <h2 class="text-2xl font-bold text-gray-700 mb-1" id="previewName">様</h2>
-                    <p class="text-xs text-brand-300 font-medium" id="previewDate">2023.00.00</p>
-                </div>
-
-                <!-- 1. Today's Care (EMPHASIZED) -->
-                <div class="px-6 mb-6">
-                    <div class="relative py-4">
-                        <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div class="w-full border-t border-brand-100"></div>
+                <!-- 1. Customer Info -->
+                <section>
+                    <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">① 基本情報</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold mb-1 text-gray-500">お客様名</label>
+                            <input type="text" id="customerName" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="例: 山田 花子" oninput="updateUI()">
                         </div>
-                        <div class="relative flex justify-center">
-                            <span class="px-2 bg-white text-xs font-bold text-brand-400 uppercase tracking-widest">Today's Menu</span>
+                        <div>
+                            <label class="block text-xs font-bold mb-1 text-gray-500">来店日</label>
+                            <input type="date" id="visitDate" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none" oninput="updateUI()">
                         </div>
                     </div>
-                    
-                    <!-- Emphasized Menu Container -->
-                    <div id="previewMenu" class="flex flex-wrap justify-center gap-3">
-                        <!-- Badges injected here with stronger styling -->
-                    </div>
-                </div>
+                </section>
 
-                <!-- 2. Body Analysis (Chart) -->
-                <div class="px-6 mb-6">
-                    <h4 class="text-xs font-bold text-brand-400 mb-2 text-center tracking-widest uppercase">Body Balance</h4>
-                    <div class="bg-brand-50/50 rounded-2xl p-4 chart-wrapper border border-brand-50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
-                        <!-- Chart Container for Chart.js -->
-                        <div class="chart-container" style="position: relative; width: 100%; height: 100%;">
-                            <canvas id="bodyChart"></canvas>
+                <!-- 2. Today's Menu -->
+                <section>
+                    <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">② 本日の施術 (選択)</h3>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <label class="flex items-center space-x-2 cursor-pointer bg-brand-50 p-2 rounded border border-transparent hover:border-brand-200 transition"><input type="checkbox" class="menu-check form-checkbox text-brand-600 accent-brand-600" value="骨盤矯正" checked onchange="updateUI()"> <span>骨盤矯正</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-brand-50 p-2 rounded border border-transparent hover:border-brand-200 transition"><input type="checkbox" class="menu-check form-checkbox text-brand-600 accent-brand-600" value="姿勢矯正" checked onchange="updateUI()"> <span>姿勢矯正</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-brand-50 p-2 rounded border border-transparent hover:border-brand-200 transition"><input type="checkbox" class="menu-check form-checkbox text-brand-600 accent-brand-600" value="小顔矯正" onchange="updateUI()"> <span>小顔矯正</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-brand-50 p-2 rounded border border-transparent hover:border-brand-200 transition"><input type="checkbox" class="menu-check form-checkbox text-brand-600 accent-brand-600" value="ほぐし" onchange="updateUI()"> <span>ほぐし</span></label>
+                    </div>
+                </section>
+
+                <!-- 3. Current State (Chart Data) -->
+                <section>
+                    <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">③ 現在の状態・課題 (1-5点)</h3>
+                    <p class="text-xs text-gray-500 mb-2">※数値を変更するとレーダーチャートに反映されます</p>
+                    <div class="space-y-3 bg-white p-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm w-24 text-gray-600">姿勢・バランス</label>
+                            <input type="range" id="scorePosture" min="1" max="5" step="1" value="3" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
+                            <span id="valPosture" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm w-24 text-gray-600">柔軟性・可動域</label>
+                            <input type="range" id="scoreFlex" min="1" max="5" step="1" value="2" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
+                            <span id="valFlex" class="text-sm font-bold w-4 text-center text-brand-600">2</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm w-24 text-gray-600">巡り・代謝</label>
+                            <input type="range" id="scoreFlow" min="1" max="5" step="1" value="3" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
+                            <span id="valFlow" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm w-24 text-gray-600">筋出力・安定</label>
+                            <input type="range" id="scoreMuscle" min="1" max="5" step="1" value="4" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
+                            <span id="valMuscle" class="text-sm font-bold w-4 text-center text-brand-600">4</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm w-24 text-gray-600">顔・頭部の軽さ</label>
+                            <input type="range" id="scoreFace" min="1" max="5" step="1" value="3" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
+                            <span id="valFace" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
                         </div>
                     </div>
-                    <div class="mt-3 flex justify-between text-[10px] text-brand-400 px-4">
-                        <span>Previous</span>
-                        <span>Current</span>
-                        <span>Goal</span>
-                    </div>
-                </div>
+                </section>
 
-                <!-- 3. Coach Feedback -->
-                <div class="px-6 mb-8">
-                    <h4 class="text-xs font-bold text-brand-400 mb-3 text-center tracking-widest uppercase">Feedback & Goal</h4>
-                    <div class="bg-white relative">
-                        <!-- Quotation mark decoration -->
-                        <span class="absolute -top-2 -left-1 text-4xl text-brand-200 opacity-50 font-serif leading-none">“</span>
-                        <p id="previewComment" class="text-sm leading-relaxed text-gray-600 whitespace-pre-wrap pl-6 border-l-2 border-brand-300 py-1">
-                            本日は施術お疲れ様でした。
-                            骨盤周りの動きは良くなっています！次回は肩甲骨周りをさらに広げていきましょう。
-                        </p>
+                <!-- 4. Message & Goal -->
+                <section>
+                    <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">④ コメント / 次の目標</h3>
+                    <div class="mb-3">
+                        <label class="block text-xs font-bold mb-1 text-gray-500">テンプレート選択</label>
+                        <select id="msgTemplate" class="w-full border border-gray-300 rounded p-2 text-sm bg-white text-gray-600" onchange="applyTemplate()">
+                            <option value="">カスタム入力...</option>
+                            <option value="improvement">【継続】姿勢改善・称賛パターン</option>
+                            <option value="cold">【季節】冷え・むくみケアパターン</option>
+                            <option value="face">【顔】小顔・食いしばりケアパターン</option>
+                            <option value="first">【初回/初期】立ち方・意識付けパターン</option>
+                        </select>
                     </div>
-                </div>
+                    <textarea id="coachComment" class="w-full border border-gray-300 rounded p-2 text-sm h-24 focus:ring-2 focus:ring-brand-500 outline-none resize-none" placeholder="ここにお客様へのフィードバックを入力..." oninput="updateUI()"></textarea>
+                </section>
 
-                <!-- 4. Home Work (Stretches) -->
-                <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white p-6 pb-10 min-h-[220px]">
-                    <div class="flex items-center justify-center gap-2 mb-6">
-                        <span class="text-lg bg-white/20 w-8 h-8 flex items-center justify-center rounded-full text-white">🧘‍♀️</span>
-                        <h4 class="font-bold tracking-[0.2em] text-sm text-brand-100">HOME CARE</h4>
+                <!-- 5. Recommended Stretches -->
+                <section>
+                    <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">⑤ 宿題ストレッチ</h3>
+                    <div id="stretchSelectionArea" class="space-y-4">
+                        <!-- Populated by JS -->
                     </div>
-                    
-                    <div id="previewStretches" class="space-y-4">
-                        <!-- Stretch Cards injected here -->
-                    </div>
+                </section>
 
-                    <div class="mt-8 text-center border-t border-white/10 pt-4">
-                         <p class="text-[10px] text-brand-200 opacity-90">
-                            美しさは日々の積み重ねから✨<br>
-                            ご不明点はLINEにていつでもご相談ください。
-                        </p>
-                    </div>
-                </div>
+                <!-- Spacer for mobile scroll -->
+                <div class="h-10 md:hidden"></div>
 
             </div>
-        </div>
-    </main>
+        </aside>
+
+        <!-- ========================================== -->
+        <!-- RIGHT PANEL: PREVIEW (OUTPUT TARGET)      -->
+        <!-- ========================================== -->
+        <!-- Added ID, and logic for show/hide on mobile -->
+        <main id="panel-preview" class="w-full md:w-1/2 lg:w-7/12 bg-gray-100 h-full overflow-y-auto custom-scroll relative hidden md:block">
+            
+            <div class="flex flex-col items-center justify-start min-h-full p-4 md:p-8 pb-20">
+                
+                <!-- DOWNLOAD BUTTON (Sticky position to stay visible) -->
+                <div class="sticky top-0 z-50 w-full max-w-[400px] flex justify-end mb-2 pointer-events-none">
+                    <div class="pointer-events-auto">
+                        <button onclick="downloadImage()" class="flex items-center gap-2 bg-brand-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-brand-500 hover:shadow-xl transition transform hover:-translate-y-0.5 font-bold text-sm border-2 border-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            画像を保存
+                        </button>
+                        <p id="saveMsg" class="text-xs text-brand-600 text-center mt-1 opacity-0 transition bg-white/80 rounded px-1">保存しました！</p>
+                    </div>
+                </div>
+
+                <!-- PHONE CONTAINER (The part to screenshot) -->
+                <div id="captureArea" class="bg-white w-full max-w-[400px] shadow-2xl overflow-hidden relative text-gray-800 h-auto" style="min-height: 700px; border-radius: 20px;">
+                    
+                    <!-- Top Decoration -->
+                    <div class="bg-gradient-to-r from-brand-300 to-brand-500 h-3 w-full"></div>
+
+                    <!-- Header -->
+                    <div class="p-6 pb-4 text-center bg-brand-50/50">
+                        <p class="text-[10px] text-brand-500 font-bold tracking-[0.2em] uppercase mb-1">Personal After Care Sheet</p>
+                        <h2 class="text-2xl font-bold text-gray-700 mb-1" id="previewName">様</h2>
+                        <p class="text-xs text-brand-300 font-medium" id="previewDate">2023.00.00</p>
+                    </div>
+
+                    <!-- 1. Today's Care (EMPHASIZED) -->
+                    <div class="px-6 mb-6">
+                        <div class="relative py-4">
+                            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                <div class="w-full border-t border-brand-100"></div>
+                            </div>
+                            <div class="relative flex justify-center">
+                                <span class="px-2 bg-white text-xs font-bold text-brand-400 uppercase tracking-widest">Today's Menu</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Emphasized Menu Container -->
+                        <div id="previewMenu" class="flex flex-wrap justify-center gap-3">
+                            <!-- Badges injected here with stronger styling -->
+                        </div>
+                    </div>
+
+                    <!-- 2. Body Analysis (Chart) -->
+                    <div class="px-6 mb-6">
+                        <h4 class="text-xs font-bold text-brand-400 mb-2 text-center tracking-widest uppercase">Body Balance</h4>
+                        <div class="bg-brand-50/50 rounded-2xl p-4 chart-wrapper border border-brand-50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
+                            <!-- Chart Container for Chart.js -->
+                            <div class="chart-container" style="position: relative; width: 100%; height: 100%;">
+                                <canvas id="bodyChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex justify-between text-[10px] text-brand-400 px-4">
+                            <span>Previous</span>
+                            <span>Current</span>
+                            <span>Goal</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Coach Feedback -->
+                    <div class="px-6 mb-8">
+                        <h4 class="text-xs font-bold text-brand-400 mb-3 text-center tracking-widest uppercase">Feedback & Goal</h4>
+                        <div class="bg-white relative">
+                            <!-- Quotation mark decoration -->
+                            <span class="absolute -top-2 -left-1 text-4xl text-brand-200 opacity-50 font-serif leading-none">“</span>
+                            <p id="previewComment" class="text-sm leading-relaxed text-gray-600 whitespace-pre-wrap pl-6 border-l-2 border-brand-300 py-1">
+                                本日は施術お疲れ様でした。
+                                骨盤周りの動きは良くなっています！次回は肩甲骨周りをさらに広げていきましょう。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 4. Home Work (Stretches) -->
+                    <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white p-6 pb-10 min-h-[220px]">
+                        <div class="flex items-center justify-center gap-2 mb-6">
+                            <span class="text-lg bg-white/20 w-8 h-8 flex items-center justify-center rounded-full text-white">🧘‍♀️</span>
+                            <h4 class="font-bold tracking-[0.2em] text-sm text-brand-100">HOME CARE</h4>
+                        </div>
+                        
+                        <div id="previewStretches" class="space-y-4">
+                            <!-- Stretch Cards injected here -->
+                        </div>
+
+                        <div class="mt-8 text-center border-t border-white/10 pt-4">
+                             <p class="text-[10px] text-brand-200 opacity-90">
+                                美しさは日々の積み重ねから✨<br>
+                                ご不明点はLINEにていつでもご相談ください。
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
 
     <!-- JavaScript Implementation -->
     <script>
@@ -405,6 +425,59 @@
         // ==========================================
         // 3. LOGIC & FUNCTIONS
         // ==========================================
+
+        // --- Tab Switching Logic (Mobile) ---
+        function switchTab(tabName) {
+            const editPanel = document.getElementById('panel-edit');
+            const previewPanel = document.getElementById('panel-preview');
+            const editTabBtn = document.getElementById('tab-edit');
+            const previewTabBtn = document.getElementById('tab-preview');
+
+            if (tabName === 'edit') {
+                // Show Edit, Hide Preview
+                editPanel.classList.remove('hidden');
+                previewPanel.classList.add('hidden');
+                
+                // Style Tabs
+                editTabBtn.classList.replace('text-gray-400', 'text-brand-600');
+                editTabBtn.classList.replace('border-transparent', 'border-brand-500');
+                editTabBtn.classList.add('bg-brand-50');
+                
+                previewTabBtn.classList.replace('text-brand-600', 'text-gray-400');
+                previewTabBtn.classList.replace('border-brand-500', 'border-transparent');
+                previewTabBtn.classList.remove('bg-brand-50');
+
+            } else {
+                // Hide Edit, Show Preview
+                editPanel.classList.add('hidden');
+                previewPanel.classList.remove('hidden');
+                
+                // Style Tabs
+                previewTabBtn.classList.replace('text-gray-400', 'text-brand-600');
+                previewTabBtn.classList.replace('border-transparent', 'border-brand-500');
+                previewTabBtn.classList.add('bg-brand-50');
+                
+                editTabBtn.classList.replace('text-brand-600', 'text-gray-400');
+                editTabBtn.classList.replace('border-brand-500', 'border-transparent');
+                editTabBtn.classList.remove('bg-brand-50');
+                
+                // Refresh chart since canvas might have resized while hidden
+                if (myChart) myChart.resize();
+            }
+        }
+
+        // Ensure Reset for Desktop on Resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) { // md breakpoint
+                document.getElementById('panel-edit').classList.remove('hidden');
+                document.getElementById('panel-preview').classList.remove('hidden');
+            } else {
+                // Revert to current tab state logic if shrinking back to mobile
+                // For simplicity, default to edit on resize to mobile
+                switchTab('edit');
+            }
+        });
+
 
         function renderStretchSelection() {
             const container = document.getElementById('stretchSelectionArea');
