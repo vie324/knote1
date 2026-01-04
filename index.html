@@ -95,7 +95,6 @@
         <!-- ========================================== -->
         <!-- LEFT PANEL: STAFF CONTROLS (INPUT)        -->
         <!-- ========================================== -->
-        <!-- Added ID for toggling -->
         <aside id="panel-edit" class="w-full md:w-1/2 lg:w-5/12 bg-white border-r border-brand-200 h-full flex flex-col shadow-lg z-10 absolute md:relative inset-0 md:inset-auto overflow-hidden">
             <div class="p-4 bg-brand-600 text-white flex justify-between items-center shadow-md shrink-0">
                 <div>
@@ -134,36 +133,62 @@
                     </div>
                 </section>
 
-                <!-- 3. Current State (Chart Data) -->
+                <!-- 3. Current State (Chart Data) - UPDATED METRICS -->
                 <section>
                     <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">③ 現在の状態・課題 (1-5点)</h3>
                     <p class="text-xs text-gray-500 mb-2">※数値を変更するとレーダーチャートに反映されます</p>
-                    <div class="space-y-3 bg-white p-2">
-                        <div class="flex justify-between items-center">
-                            <label class="text-sm w-24 text-gray-600">姿勢・バランス</label>
-                            <input type="range" id="scorePosture" min="1" max="5" step="1" value="3" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                            <span id="valPosture" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                    <div class="space-y-4 bg-white p-2">
+                        
+                        <!-- 1. 姿勢 -->
+                        <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm font-bold text-gray-700">★姿勢</label>
+                                <span id="valPosture" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                            </div>
+                            <p class="text-[10px] text-gray-400">巻き肩、猫背、反り腰、立ち方、座り方</p>
+                            <input type="range" id="scorePosture" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
-                        <div class="flex justify-between items-center">
-                            <label class="text-sm w-24 text-gray-600">柔軟性・可動域</label>
-                            <input type="range" id="scoreFlex" min="1" max="5" step="1" value="2" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                            <span id="valFlex" class="text-sm font-bold w-4 text-center text-brand-600">2</span>
+
+                        <!-- 2. 骨盤 -->
+                        <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm font-bold text-gray-700">★骨盤</label>
+                                <span id="valPelvis" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                            </div>
+                            <p class="text-[10px] text-gray-400">足の左右差、産後骨盤、ヒップアップ、O脚Ｘ脚</p>
+                            <input type="range" id="scorePelvis" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
-                        <div class="flex justify-between items-center">
-                            <label class="text-sm w-24 text-gray-600">巡り・代謝</label>
-                            <input type="range" id="scoreFlow" min="1" max="5" step="1" value="3" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                            <span id="valFlow" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+
+                        <!-- 3. 顔・頭 -->
+                        <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm font-bold text-gray-700">★顔・頭</label>
+                                <span id="valFace" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                            </div>
+                            <p class="text-[10px] text-gray-400">フェイスライン、頬骨、ハチ、眼精疲労、左右差</p>
+                            <input type="range" id="scoreFace" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
-                        <div class="flex justify-between items-center">
-                            <label class="text-sm w-24 text-gray-600">筋出力・安定</label>
-                            <input type="range" id="scoreMuscle" min="1" max="5" step="1" value="4" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                            <span id="valMuscle" class="text-sm font-bold w-4 text-center text-brand-600">4</span>
+
+                        <!-- 4. 代謝・巡り -->
+                        <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm font-bold text-gray-700">★代謝・巡り</label>
+                                <span id="valFlow" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                            </div>
+                            <p class="text-[10px] text-gray-400">代謝、むくみ、冷え</p>
+                            <input type="range" id="scoreFlow" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
-                        <div class="flex justify-between items-center">
-                            <label class="text-sm w-24 text-gray-600">顔・頭部の軽さ</label>
-                            <input type="range" id="scoreFace" min="1" max="5" step="1" value="3" class="w-full mx-2 accent-brand-500" oninput="updateChartData()">
-                            <span id="valFace" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+
+                        <!-- 5. 柔軟性・バランス -->
+                        <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm font-bold text-gray-700">★柔軟性・バランス</label>
+                                <span id="valFlex" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                            </div>
+                            <p class="text-[10px] text-gray-400">筋肉、関節、左右差、歩き方、体幹</p>
+                            <input type="range" id="scoreFlex" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
+
                     </div>
                 </section>
 
@@ -174,10 +199,29 @@
                         <label class="block text-xs font-bold mb-1 text-gray-500">テンプレート選択</label>
                         <select id="msgTemplate" class="w-full border border-gray-300 rounded p-2 text-sm bg-white text-gray-600" onchange="applyTemplate()">
                             <option value="">カスタム入力...</option>
+                            <!-- Original Templates -->
                             <option value="improvement">【継続】姿勢改善・称賛パターン</option>
                             <option value="cold">【季節】冷え・むくみケアパターン</option>
                             <option value="face">【顔】小顔・食いしばりケアパターン</option>
                             <option value="first">【初回/初期】立ち方・意識付けパターン</option>
+                            <!-- Added Templates with Clear Titles -->
+                            <option value="calf">【足】ふくらはぎの疲労・張り</option>
+                            <option value="scapula">【肩・背中】肩甲骨周りの硬さ</option>
+                            <option value="face_swelling">【顔】むくみケア</option>
+                            <option value="face_square">【顔】エラ張り・食いしばり</option>
+                            <option value="double_chin">【顔】二重顎・首元のケア</option>
+                            <option value="eye_level">【顔】目の高さ・左右差</option>
+                            <option value="face_width">【顔】横幅・小顔ケア</option>
+                            <option value="pelvis_distortion">【骨盤】歪み・バランス</option>
+                            <option value="hip_distortion">【下半身】股関節の柔軟性</option>
+                            <option value="lower_body">【下半身】代謝・むくみ</option>
+                            <option value="leg_swelling">【足】むくみ・冷え対策</option>
+                            <option value="balance">【全身】バランス・体幹</option>
+                            <option value="rolled_shoulder">【姿勢】巻き肩ケア</option>
+                            <option value="straight_neck">【首】ストレートネック</option>
+                            <option value="hunchback">【姿勢】猫背改善</option>
+                            <option value="scapula_wing">【背中】肩甲骨出し・美背中</option>
+                            <option value="cold_hands">【末端】手先の冷え</option>
                         </select>
                     </div>
                     <textarea id="coachComment" class="w-full border border-gray-300 rounded p-2 text-sm h-24 focus:ring-2 focus:ring-brand-500 outline-none resize-none" placeholder="ここにお客様へのフィードバックを入力..." oninput="updateUI()"></textarea>
@@ -200,7 +244,6 @@
         <!-- ========================================== -->
         <!-- RIGHT PANEL: PREVIEW (OUTPUT TARGET)      -->
         <!-- ========================================== -->
-        <!-- Added ID, and logic for show/hide on mobile -->
         <main id="panel-preview" class="w-full md:w-1/2 lg:w-7/12 bg-gray-100 h-full overflow-y-auto custom-scroll relative hidden md:block">
             
             <div class="flex flex-col items-center justify-start min-h-full p-4 md:p-8 pb-20">
@@ -311,7 +354,25 @@
             improvement: "姿勢改善に向けて現在頑張っていますが、状態はいかがでしょうか？\n本日は〇〇の位置が良くなっています。少し意識するだけでもより近づいていけますので、引き続き頑張っていきましょう！",
             cold: "最近寒いですね。足のむくみや冷えを感じて肩に力が入ってしまいがちです。\n本日は骨盤矯正で土台を整えて循環をよくし、姿勢矯正で可動域を広げて巻き肩をケアしました。お風呂上がりなどにストレッチを行ってみてください。",
             face: "本日は姿勢矯正で肩甲骨、肩まわりを動かして呼吸をしやすくし、小顔矯正で食いしばりや側頭筋などを弛めてお身体をスッキリさせました！\n顔周りの緊張が取れると睡眠の質も上がります。",
-            first: "立ち方（座り方、歩き方）はご自宅や職場でも意識できていますか？\nまずはご自身で「気づいた時に直す」範囲で大丈夫です。骨盤の使い方、肩首の位置など、次回またチェックさせていただきますね。"
+            first: "立ち方（座り方、歩き方）はご自宅や職場でも意識できていますか？\nまずはご自身で「気づいた時に直す」範囲で大丈夫です。骨盤の使い方、肩首の位置など、次回またチェックさせていただきますね。",
+            // Added Templates
+            calf: "本日は足の疲労がすごく、かたかったです！\n血行をよくするために足のトレーニングをお伝えします。",
+            scapula: "肩甲骨周りの硬さがありました。肩甲骨の可動域を広げると血行も良くなり、肩こり、背中のこりもスッキリしてきます。こちらを行ってみてください。",
+            face_swelling: "本日もご来店頂きありがとうございます。顔のむくみには水分をしっかりと取って頂き、塩分の摂りすぎなどに注意してみてください。",
+            face_square: "本日もご来店頂きありがとうございます。エラ張りは噛み締めからくることがほとんどですので、普段からエラが張っているかを確認してみてください。",
+            double_chin: "本日もご来店頂きありがとうございます。デスクワークで下を向くことが多いと思いますので、休憩中でも構いませんので、ストレッチしてみてください。",
+            eye_level: "本日もご来店頂きありがとうございます。目の高さの違いが出ていましたので、毎日こちらを続けてみてください。",
+            face_width: "本日もご来店頂きありがとうございます。顔の横幅を変えるには毎日のケアが必要となりますので、こちらを参考にやってみてください。",
+            pelvis_distortion: "骨盤は骨格の土台ですので、歪むと腰痛や肩こり、内臓圧迫による不調の原因となり、バランスが崩れて体に負担がかかります。",
+            hip_distortion: "日常動作で股関節を使えていない方が多く、腰から動いてしまっていることが腰痛や足の張りの原因になりやすいため、「股関節」から動かして体の負担を減らすことが大切です。",
+            lower_body: "お尻や太もも等の大きな筋肉が硬いと、代謝が落ちやすく血行不良やむくみに繋がりやすくなります。関節が歪むことでの影響も強いため、各関節を正しい位置に戻すことが大切です。",
+            leg_swelling: "運動不足による筋肉量の低下や、冷え・水分不足による循環機能の低下で老廃物が溜まりやすくなっていますので、しっかりとしたケアが必要です。",
+            balance: "体のバランスが保てないのは、骨盤や背骨の歪みも影響していますが、足首、股関節、体幹の意識も必要ですので、全体を整えていくことが大切です。",
+            rolled_shoulder: "お風呂上がりにやってみてください。",
+            straight_neck: "定期的にやってみてください。",
+            hunchback: "「背中が丸いな」と感じたらやってみてください。",
+            scapula_wing: "まずは1日5回から始めて徐々に回数を増やしてください。",
+            cold_hands: "なるべく湯船に浸かってください。"
         };
 
         const stretchData = {
@@ -345,6 +406,49 @@
                     title: "巻き肩ケア",
                     icon: "🥐",
                     text: "①肘を曲げ、上腕を脇につける ②前腕部分だけ後ろ回しをする (後ろの肩周りに効いていればOK)"
+                },
+                // Added Posture Items
+                {
+                    id: "p_scapula",
+                    title: "肩甲骨ケア",
+                    icon: "🦋",
+                    text: "①胸を開き肩甲骨を寄せる<br>②ゆっくり5秒キープして力を抜く<br>③5回"
+                },
+                {
+                    id: "p_balance",
+                    title: "バランス・体幹",
+                    icon: "🏄",
+                    text: "・プランク→うつ伏せになり肘と足のつま先で支える頭からかかとまで一直線、腰を反らないように<br>・タオルギャザー→床にタオルを置き両足の指を使って手繰り寄せる<br>・デッドバグ→仰向けになり両手足を天井に上げ左右対称に上げ下げする"
+                },
+                {
+                    id: "p_roll",
+                    title: "巻き肩(壁)",
+                    icon: "🐌",
+                    text: "壁を使ってストレッチ"
+                },
+                {
+                    id: "p_neck",
+                    title: "ストレートネック",
+                    icon: "📱",
+                    text: "真上を向く"
+                },
+                {
+                    id: "p_hunch",
+                    title: "猫背リセット",
+                    icon: "🐈",
+                    text: "腕を後ろにして背中を縮めてからリラックス"
+                },
+                {
+                    id: "p_wing",
+                    title: "肩甲骨出し",
+                    icon: "👼",
+                    text: "バンザイをしてから背中で肘をつけるイメージでギュッと３秒力を入れてバンザイ"
+                },
+                {
+                    id: "p_cold",
+                    title: "手先の冷え",
+                    icon: "🧤",
+                    text: "湯船に浸かっている状態で手をグーパーしてください。"
                 }
             ],
             pelvis: [
@@ -371,6 +475,37 @@
                     title: "内腿ほぐし",
                     icon: "🦵",
                     text: "①あぐらの状態で内腿を触る ②手のひらで内腿を覆い、体重をかけて押圧する"
+                },
+                // Added Pelvis Items
+                {
+                    id: "l_calf",
+                    title: "ふくらはぎ",
+                    icon: "🦵",
+                    text: "①壁や椅子につかまり、かかとをゆっくり上げ下げする<br>②反動を使わず、ゆっくり行う<br>③10回×2セット"
+                },
+                {
+                    id: "l_pelvis",
+                    title: "骨盤の歪み",
+                    icon: "⚖️",
+                    text: "・骨盤ゆらし→①仰向けで寝る。②腰幅に足を開く。③呼吸しながら足先をワイパーのように動かす。<br>・骨盤体操→①椅子に浅く座る。②腰幅に足を開く。③腰に手をやり、胸や背中一直線にし背中を曲げる、戻す事で骨盤をしっかり動かす。<br>・ブリッジ→①仰向けで膝を立てる。②背中〜お尻一直線意識し持ち上げる。"
+                },
+                {
+                    id: "l_hip",
+                    title: "股関節の歪み",
+                    icon: "🦴",
+                    text: "・①仰向けね寝る。②片膝を抱え肩の方向に引き寄せる。③反対も行う。10〜15秒。<br>・①両膝を立て左右に倒す、まわす等。10回<br>・①階段1段くらいの高さで良いので片足を伸ばした状態でかかとをつける...（かかとから足裏にかけて伸びを感じたらok）"
+                },
+                {
+                    id: "l_lower",
+                    title: "下半身ケア",
+                    icon: "👖",
+                    text: "・スクワット、有酸素運動→ ①足を肩幅に広げる。②背筋を伸ばし、お尻を後ろに引くようにしゃがむ。③かかとで床を押しながらゆっくり上がる。<br>・もも前(クワドストレッチ)→①片足で立ちあげた足の足首か爪先を持ちお尻に向けて曲げて10秒キープ"
+                },
+                {
+                    id: "l_swelling",
+                    title: "足のむくみ・冷え",
+                    icon: "👣",
+                    text: "・つま先立ち運動→体一直線にしかかとを上げ下げやキープする<br>・足の指に手の指を入れまわす、伸ばす、曲げる<br>・膝窩をテニスボール等で流す"
                 }
             ],
             face: [
@@ -397,6 +532,37 @@
                     title: "後頭下筋リリース",
                     icon: "🛌",
                     text: "①仰向けで寝る ②後頭部のくぼみ(後頭下筋)に手を置く ③顎を少し上げゆっくり深呼吸"
+                },
+                // Added Face Items
+                {
+                    id: "f_swelling",
+                    title: "顔のむくみ",
+                    icon: "💧",
+                    text: "オイルやクリームを首筋に塗って頂き、首筋からフェイスラインに流すようにマッサージしてみてください。"
+                },
+                {
+                    id: "f_square",
+                    title: "エラ張りケア",
+                    icon: "📐",
+                    text: "手をぐーにして頬骨の下に当て口を軽く開けながら奥の筋肉をほぐすように左右に動かしながらほぐしていきましょう。"
+                },
+                {
+                    id: "f_double",
+                    title: "二重顎ケア",
+                    icon: "🆙",
+                    text: "①顎先をなるべく天井に向けて上を向く ②喉から首が伸びているのを感じるくらい伸ばし20秒くらい続ける"
+                },
+                {
+                    id: "f_eye",
+                    title: "目の左右差",
+                    icon: "👁️",
+                    text: "①耳の上に4本指を当て前回し30秒、後ろ回し30秒<br>②耳をチョキの指で根元から挟み大きく後ろ回し30秒、前回し30秒<br>③下がっている方の頬骨の下に手根を当てて斜め上に押し上げ(30秒)"
+                },
+                {
+                    id: "f_width",
+                    title: "顔の横幅ケア",
+                    icon: "↔️",
+                    text: "①手をグーにして、頬骨の下に関節を当てて20秒押す<br>②頬骨に沿って内側に移動し、20秒押す<br>③手根を頬骨に当てて、両サイドからじんわり押す<br>④更に内側にずらし押す"
                 }
             ]
         };
@@ -472,8 +638,6 @@
                 document.getElementById('panel-edit').classList.remove('hidden');
                 document.getElementById('panel-preview').classList.remove('hidden');
             } else {
-                // Revert to current tab state logic if shrinking back to mobile
-                // For simplicity, default to edit on resize to mobile
                 switchTab('edit');
             }
         });
@@ -489,7 +653,7 @@
                         <input type="checkbox" class="stretch-check mt-1 form-checkbox text-brand-600 rounded focus:ring-brand-500 accent-brand-500" value="${key}-${s.id}" onchange="updateUI()">
                         <div>
                             <span class="font-bold text-gray-700 block flex items-center gap-1">${s.icon} ${s.title}</span>
-                            <span class="text-[10px] text-gray-400 truncate block mt-0.5">${s.text.substring(0, 30)}...</span>
+                            <span class="text-[10px] text-gray-400 truncate block mt-0.5">${s.text.replace(/<br>/g, ' ').substring(0, 30)}...</span>
                         </div>
                     </label>
                 `).join('');
@@ -529,15 +693,15 @@
             myChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: ['姿勢', '柔軟性', '循環', '筋力', '顔・頭'],
+                    // UPDATED LABELS HERE
+                    labels: ['姿勢', '骨盤', '顔・頭', '代謝・巡り', '柔軟・バランス'],
                     datasets: [{
                         label: 'Condition',
-                        data: [3, 2, 3, 4, 3],
-                        // Updated for Green Theme
-                        backgroundColor: 'rgba(108, 168, 138, 0.4)', // brand-500 with opacity
-                        borderColor: '#6ca88a', // brand-500
+                        data: [3, 3, 3, 3, 3],
+                        backgroundColor: 'rgba(108, 168, 138, 0.4)', 
+                        borderColor: '#6ca88a', 
                         pointBackgroundColor: '#fff',
-                        pointBorderColor: '#52856d', // brand-600
+                        pointBorderColor: '#52856d', 
                         pointHoverBackgroundColor: '#fff',
                         pointHoverBorderColor: '#345244',
                         borderWidth: 2,
@@ -549,15 +713,15 @@
                     responsive: true,
                     scales: {
                         r: {
-                            angleLines: { color: '#e1efe7' }, // brand-100
-                            grid: { color: '#f2f8f5' }, // brand-50
+                            angleLines: { color: '#e1efe7' }, 
+                            grid: { color: '#f2f8f5' }, 
                             pointLabels: {
                                 font: {
                                     size: 10,
                                     family: "'Zen Kaku Gothic New', sans-serif",
                                     weight: 'bold'
                                 },
-                                color: '#52856d' // brand-600
+                                color: '#52856d'
                             },
                             suggestedMin: 0,
                             suggestedMax: 5,
@@ -576,18 +740,22 @@
         }
 
         function updateChartData() {
-            const s1 = document.getElementById('scorePosture');
-            const s2 = document.getElementById('scoreFlex');
-            const s3 = document.getElementById('scoreFlow');
-            const s4 = document.getElementById('scoreMuscle');
-            const s5 = document.getElementById('scoreFace');
+            // UPDATED ID MAPPING
+            const s1 = document.getElementById('scorePosture'); // 姿勢
+            const s2 = document.getElementById('scorePelvis');  // 骨盤
+            const s3 = document.getElementById('scoreFace');    // 顔・頭
+            const s4 = document.getElementById('scoreFlow');    // 代謝・巡り
+            const s5 = document.getElementById('scoreFlex');    // 柔軟性・バランス
 
+            // Update Number Displays
             document.getElementById('valPosture').innerText = s1.value;
-            document.getElementById('valFlex').innerText = s2.value;
-            document.getElementById('valFlow').innerText = s3.value;
-            document.getElementById('valMuscle').innerText = s4.value;
-            document.getElementById('valFace').innerText = s5.value;
+            document.getElementById('valPelvis').innerText = s2.value;
+            document.getElementById('valFace').innerText = s3.value;
+            document.getElementById('valFlow').innerText = s4.value;
+            document.getElementById('valFlex').innerText = s5.value;
 
+            // Update Chart Data Array (Order must match 'labels' in initChart)
+            // Order: ['姿勢', '骨盤', '顔・頭', '代謝・巡り', '柔軟・バランス']
             if (myChart) {
                 myChart.data.datasets[0].data = [s1.value, s2.value, s3.value, s4.value, s5.value];
                 myChart.update();
@@ -611,7 +779,6 @@
             } else {
                 menuChecks.forEach(cb => {
                     const span = document.createElement('div');
-                    // Stronger visual emphasis for tags
                     span.className = 'px-4 py-2 bg-brand-100 text-brand-800 text-sm rounded-lg border-2 border-brand-200 font-bold shadow-sm flex items-center gap-2';
                     span.innerHTML = `<span class="text-brand-500">✔</span> ${cb.value}`;
                     menuContainer.appendChild(span);
@@ -669,16 +836,14 @@
             const element = document.getElementById('captureArea');
             const msg = document.getElementById('saveMsg');
             
-            // Visual Feedback
             msg.style.opacity = '1';
             msg.innerText = '生成中...';
 
             html2canvas(element, {
-                scale: 2, // High resolution (Retina)
-                backgroundColor: '#ffffff', // Ensure white background
-                useCORS: true // Allow loading cross-origin images if added later
+                scale: 2, 
+                backgroundColor: '#ffffff',
+                useCORS: true 
             }).then(canvas => {
-                // Trigger Download
                 const link = document.createElement('a');
                 const name = document.getElementById('customerName').value || 'Customer';
                 const date = document.getElementById('visitDate').value || 'Date';
@@ -687,7 +852,6 @@
                 link.href = canvas.toDataURL('image/png');
                 link.click();
 
-                // Finish Feedback
                 msg.innerText = '保存しました！';
                 setTimeout(() => {
                     msg.style.opacity = '0';
