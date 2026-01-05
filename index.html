@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>si'se Seitai: After-Care Report Generator</title>
+    <title>Beauty Seitai: After-Care Report Generator</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -36,6 +36,7 @@
                             600: '#52856d',  // Darker Text
                             800: '#345244',  // Deep Forest
                             accent: '#94a3b8',
+                            gold: '#d4af37', // For Coupon
                         }
                     }
                 }
@@ -71,6 +72,35 @@
             justify-content: center;
             align-items: center;
         }
+
+        /* Enhanced Coupon Ticket Style */
+        .coupon-ticket {
+            /* Goldish gradient background */
+            background: linear-gradient(135deg, #fffbf0 0%, #fff 50%, #fffbf0 100%);
+            /* Ticket holes using radial gradient mask on a border-box */
+            position: relative;
+            border: 2px solid #eab308; /* Tailwind yellow-500 equivalent */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Ticket Scallops (Holes) */
+        .coupon-ticket::before,
+        .coupon-ticket::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background-color: #6ca88a; /* Matches container background (brand-600) or close to it */
+            border-radius: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .coupon-ticket::before { left: -12px; border-right: 2px solid #eab308; }
+        .coupon-ticket::after { right: -12px; border-left: 2px solid #eab308; }
+
+        /* Because the parent background is actually a gradient, exact matching for holes is tricky.
+           Simpler approach for visual "flashiness": Gold Border + Drop Shadow + Corner accents. */
     </style>
 </head>
 <body class="text-gray-700 h-screen overflow-hidden flex flex-col font-sans">
@@ -98,7 +128,7 @@
         <aside id="panel-edit" class="w-full md:w-1/2 lg:w-5/12 bg-white border-r border-brand-200 h-full flex flex-col shadow-lg z-10 absolute md:relative inset-0 md:inset-auto overflow-hidden">
             <div class="p-4 bg-brand-600 text-white flex justify-between items-center shadow-md shrink-0">
                 <div>
-                    <h1 class="font-bold text-lg">si'seレポート作成</h1>
+                    <h1 class="font-bold text-lg">🌿 レポート作成</h1>
                     <p class="text-xs text-brand-100 md:block hidden">設定後に右側で保存</p>
                     <p class="text-xs text-brand-100 md:hidden block">入力後に「プレビュー」へ</p>
                 </div>
@@ -133,7 +163,7 @@
                     </div>
                 </section>
 
-                <!-- 3. Current State (Chart Data) -->
+                <!-- 3. Current State (Chart Data) - UPDATED METRICS -->
                 <section>
                     <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">③ 現在の状態・課題 (1-5点)</h3>
                     <p class="text-xs text-gray-500 mb-2">※数値を変更するとレーダーチャートに反映されます</p>
@@ -260,6 +290,31 @@
                     </div>
                 </section>
 
+                <!-- 7. Coupon Selection -->
+                <section>
+                    <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">⑦ 次回クーポン (任意)</h3>
+                    <div class="space-y-2 text-sm">
+                        <label class="flex items-center space-x-2 cursor-pointer bg-gray-50 p-2 rounded hover:bg-brand-50 border border-transparent hover:border-brand-200">
+                            <input type="radio" name="coupon" value="none" checked onchange="updateUI()" class="form-radio text-brand-600 focus:ring-brand-500">
+                            <span class="text-gray-600">なし</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-gray-50 p-2 rounded hover:bg-brand-50 border border-transparent hover:border-brand-200">
+                            <input type="radio" name="coupon" value="c1" onchange="updateUI()" class="form-radio text-brand-600 focus:ring-brand-500">
+                            <div>
+                                <span class="font-bold text-gray-700 block">クーポン1 (1種+ほぐし)</span>
+                                <span class="text-xs text-brand-600">9,000円 → 6,500円</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-gray-50 p-2 rounded hover:bg-brand-50 border border-transparent hover:border-brand-200">
+                            <input type="radio" name="coupon" value="c2" onchange="updateUI()" class="form-radio text-brand-600 focus:ring-brand-500">
+                            <div>
+                                <span class="font-bold text-gray-700 block">クーポン2 (2種+ほぐし)</span>
+                                <span class="text-xs text-brand-600">10,000円 → 7,500円</span>
+                            </div>
+                        </label>
+                    </div>
+                </section>
+
                 <!-- Spacer for mobile scroll -->
                 <div class="h-10 md:hidden"></div>
 
@@ -294,7 +349,7 @@
 
                     <!-- Header -->
                     <div class="p-6 pb-4 text-center bg-brand-50/50">
-                        <p class="text-[10px] text-brand-500 font-bold tracking-[0.2em] uppercase mb-1">si'se Personal After Care Sheet</p>
+                        <p class="text-[10px] text-brand-500 font-bold tracking-[0.2em] uppercase mb-1">Personal After Care Sheet</p>
                         <h2 class="text-2xl font-bold text-gray-700 mb-1" id="previewName">様</h2>
                         <p class="text-xs text-brand-300 font-medium" id="previewDate">2023.00.00</p>
                     </div>
@@ -354,7 +409,7 @@
                     </div>
 
                     <!-- 5. Home Work (Stretches) -->
-                    <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white p-6 pb-10 min-h-[220px]">
+                    <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white p-6 pb-8 min-h-[200px]">
                         <div class="flex items-center justify-center gap-2 mb-6">
                             <span class="text-lg bg-white/20 w-8 h-8 flex items-center justify-center rounded-full text-white">🧘‍♀️</span>
                             <h4 class="font-bold tracking-[0.2em] text-sm text-brand-100">HOME CARE</h4>
@@ -362,6 +417,36 @@
                         
                         <div id="previewStretches" class="space-y-4">
                             <!-- Stretch Cards injected here -->
+                        </div>
+
+                        <!-- 7. Coupon Preview Area (Inside the dark footer section) -->
+                        <div id="previewCoupon" class="hidden mt-8 mx-2 transform hover:scale-[1.02] transition-transform">
+                            <div class="coupon-ticket p-4 rounded-lg relative overflow-hidden text-center">
+                                <!-- Flashy Header -->
+                                <div class="absolute top-0 left-0 w-full h-1 bg-yellow-400"></div>
+                                <div class="inline-block bg-yellow-400 text-white text-[10px] font-bold px-3 py-0.5 rounded-b-md tracking-widest mb-3 shadow-sm">SPECIAL COUPON</div>
+                                
+                                <h5 id="couponTitle" class="text-sm font-bold mb-1 text-gray-800 leading-tight">選べる美容矯正1種類＋ほぐし</h5>
+                                
+                                <!-- Price Area -->
+                                <div class="flex items-end justify-center gap-2 mb-2 text-brand-600">
+                                    <span id="couponOldPrice" class="text-xs text-gray-400 line-through mb-1">¥9,000</span>
+                                    <span class="text-lg font-bold text-red-500">→</span>
+                                    <span id="couponNewPrice" class="text-2xl font-black text-red-500 drop-shadow-sm">¥6,500</span>
+                                </div>
+
+                                <!-- Expiry Area (Added) -->
+                                <div class="bg-red-50 border border-red-100 rounded py-1 px-2 mb-2 inline-block">
+                                    <p class="text-[10px] text-red-500 font-bold">
+                                        有効期限: <span id="couponExpiryDate" class="text-red-600 text-xs">2023.00.00</span> まで
+                                    </p>
+                                </div>
+
+                                <p id="couponDesc" class="text-[9px] text-gray-500 text-left bg-white/60 p-2 rounded border border-yellow-100">
+                                    ※美容矯正は小顔矯正、姿勢矯正、骨盤矯正の中から選択可能<br>
+                                    ※Quickプラン
+                                </p>
+                            </div>
                         </div>
 
                         <div class="mt-8 text-center border-t border-white/10 pt-4">
@@ -446,6 +531,7 @@
                     icon: "🥐",
                     text: "①肘を曲げ、上腕を脇につける ②前腕部分だけ後ろ回しをする (後ろの肩周りに効いていればOK)"
                 },
+                // Added Posture Items
                 {
                     id: "p_scapula",
                     title: "肩甲骨ケア",
@@ -916,6 +1002,51 @@
                     }
                 });
             }
+
+            // 7. Coupon Logic (Updated)
+            const couponRadio = document.querySelector('input[name="coupon"]:checked');
+            const couponArea = document.getElementById('previewCoupon');
+            const couponTitle = document.getElementById('couponTitle');
+            const couponOld = document.getElementById('couponOldPrice');
+            const couponNew = document.getElementById('couponNewPrice');
+            const couponDesc = document.getElementById('couponDesc');
+            const expiryDateEl = document.getElementById('couponExpiryDate');
+
+            // Calculate Expiry Date
+            if (dateVal) {
+                const visitDate = new Date(dateVal);
+                if (!isNaN(visitDate)) {
+                    // Add 21 days
+                    visitDate.setDate(visitDate.getDate() + 21);
+                    const y = visitDate.getFullYear();
+                    const m = (visitDate.getMonth() + 1).toString().padStart(2, '0');
+                    const d = visitDate.getDate().toString().padStart(2, '0');
+                    expiryDateEl.innerText = `${y}.${m}.${d}`;
+                } else {
+                    expiryDateEl.innerText = "日付未設定";
+                }
+            } else {
+                expiryDateEl.innerText = "日付未設定";
+            }
+
+            if (couponRadio && couponRadio.value !== 'none') {
+                couponArea.classList.remove('hidden');
+                
+                if (couponRadio.value === 'c1') {
+                    couponTitle.innerText = "選べる美容矯正1種類＋ほぐし";
+                    couponOld.innerText = "¥9,000";
+                    couponNew.innerText = "¥6,500";
+                    couponDesc.innerHTML = "※美容矯正は小顔矯正、姿勢矯正、骨盤矯正の中から選択可能<br>※Quickプラン";
+                } else if (couponRadio.value === 'c2') {
+                    couponTitle.innerText = "選べる美容矯正2種類＋ほぐし";
+                    couponOld.innerText = "¥10,000";
+                    couponNew.innerText = "¥7,500";
+                    // Corrected Plan Name here
+                    couponDesc.innerHTML = "※美容矯正は小顔矯正、姿勢矯正、骨盤矯正の中から選択可能<br>※Standardプラン";
+                }
+            } else {
+                couponArea.classList.add('hidden');
+            }
         }
 
         function resetForm() {
@@ -926,6 +1057,10 @@
                 document.querySelectorAll('input[type="range"]').forEach(r => r.value = 3);
                 // Reset Photo
                 clearPhoto();
+                // Reset Radio
+                const noneRadio = document.querySelector('input[name="coupon"][value="none"]');
+                if(noneRadio) noneRadio.checked = true;
+
                 updateChartData();
                 updateUI();
             }
