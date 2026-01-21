@@ -15,7 +15,7 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
     <!-- Configuration & Styles -->
     <script>
@@ -23,7 +23,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Zen Kaku Gothic New"', 'sans-serif'],
+                        sans: ['"M PLUS 1p"', 'sans-serif'],
                     },
                     colors: {
                         // Gentle Green Palette (Sage/Nature inspired)
@@ -112,10 +112,10 @@
     <!-- ========================================== -->
     <div class="md:hidden flex bg-white border-b border-brand-200 z-50 shrink-0 shadow-sm">
         <button onclick="switchTab('edit')" id="tab-edit" class="flex-1 py-3 text-sm font-bold text-brand-600 border-b-4 border-brand-500 bg-brand-50 transition-colors">
-            ✏️ 入力・編集
+            入力・編集
         </button>
         <button onclick="switchTab('preview')" id="tab-preview" class="flex-1 py-3 text-sm font-bold text-gray-400 border-b-4 border-transparent hover:bg-gray-50 transition-colors">
-            📱 プレビュー確認
+            プレビュー確認
         </button>
     </div>
 
@@ -128,7 +128,7 @@
         <aside id="panel-edit" class="w-full md:w-1/2 lg:w-5/12 bg-white border-r border-brand-200 h-full flex flex-col shadow-lg z-10 absolute md:relative inset-0 md:inset-auto overflow-hidden">
             <div class="p-4 bg-brand-600 text-white flex justify-between items-center shadow-md shrink-0">
                 <div>
-                    <h1 class="font-bold text-lg">🌿 レポート作成</h1>
+                    <h1 class="font-bold text-lg">レポート作成</h1>
                     <p class="text-xs text-brand-100 md:block hidden">設定後に右側で保存</p>
                     <p class="text-xs text-brand-100 md:hidden block">入力後に「プレビュー」へ</p>
                 </div>
@@ -165,58 +165,58 @@
 
                 <!-- 3. Current State (Chart Data) - UPDATED METRICS -->
                 <section>
-                    <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">③ 現在の状態・課題 (1-5点)</h3>
-                    <p class="text-xs text-gray-500 mb-2">※数値を変更するとレーダーチャートに反映されます</p>
+                    <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">③ 現在の状態・課題 (0-5.0点)</h3>
+                    <p class="text-xs text-gray-500 mb-2">※数値を変更するとレーダーチャートに反映されます (0.5刻み)</p>
                     <div class="space-y-4 bg-white p-2">
                         
                         <!-- 1. 姿勢 -->
                         <div class="flex flex-col gap-1">
                             <div class="flex justify-between items-center">
                                 <label class="text-sm font-bold text-gray-700">★姿勢</label>
-                                <span id="valPosture" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                                <span id="valPosture" class="text-sm font-bold w-8 text-center text-brand-600">0</span>
                             </div>
                             <p class="text-[10px] text-gray-400">巻き肩、猫背、反り腰、立ち方、座り方</p>
-                            <input type="range" id="scorePosture" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
+                            <input type="range" id="scorePosture" min="0" max="5" step="0.5" value="0" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
 
                         <!-- 2. 骨盤 -->
                         <div class="flex flex-col gap-1">
                             <div class="flex justify-between items-center">
                                 <label class="text-sm font-bold text-gray-700">★骨盤</label>
-                                <span id="valPelvis" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                                <span id="valPelvis" class="text-sm font-bold w-8 text-center text-brand-600">0</span>
                             </div>
                             <p class="text-[10px] text-gray-400">足の左右差、産後骨盤、ヒップアップ、O脚Ｘ脚</p>
-                            <input type="range" id="scorePelvis" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
+                            <input type="range" id="scorePelvis" min="0" max="5" step="0.5" value="0" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
 
                         <!-- 3. 顔・頭 -->
                         <div class="flex flex-col gap-1">
                             <div class="flex justify-between items-center">
                                 <label class="text-sm font-bold text-gray-700">★顔・頭</label>
-                                <span id="valFace" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                                <span id="valFace" class="text-sm font-bold w-8 text-center text-brand-600">0</span>
                             </div>
                             <p class="text-[10px] text-gray-400">フェイスライン、頬骨、ハチ、眼精疲労、左右差</p>
-                            <input type="range" id="scoreFace" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
+                            <input type="range" id="scoreFace" min="0" max="5" step="0.5" value="0" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
 
                         <!-- 4. 代謝・巡り -->
                         <div class="flex flex-col gap-1">
                             <div class="flex justify-between items-center">
                                 <label class="text-sm font-bold text-gray-700">★代謝・巡り</label>
-                                <span id="valFlow" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                                <span id="valFlow" class="text-sm font-bold w-8 text-center text-brand-600">0</span>
                             </div>
                             <p class="text-[10px] text-gray-400">代謝、むくみ、冷え</p>
-                            <input type="range" id="scoreFlow" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
+                            <input type="range" id="scoreFlow" min="0" max="5" step="0.5" value="0" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
 
                         <!-- 5. 柔軟性・バランス -->
                         <div class="flex flex-col gap-1">
                             <div class="flex justify-between items-center">
                                 <label class="text-sm font-bold text-gray-700">★柔軟性・バランス</label>
-                                <span id="valFlex" class="text-sm font-bold w-4 text-center text-brand-600">3</span>
+                                <span id="valFlex" class="text-sm font-bold w-8 text-center text-brand-600">0</span>
                             </div>
                             <p class="text-[10px] text-gray-400">筋肉、関節、左右差、歩き方、体幹</p>
-                            <input type="range" id="scoreFlex" min="1" max="5" step="1" value="3" class="w-full accent-brand-500" oninput="updateChartData()">
+                            <input type="range" id="scoreFlex" min="0" max="5" step="0.5" value="0" class="w-full accent-brand-500" oninput="updateChartData()">
                         </div>
 
                     </div>
@@ -227,7 +227,7 @@
                     <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">④ 写真を追加 (任意)</h3>
                     <div class="bg-gray-50 border border-brand-100 rounded-lg p-3 text-center">
                         <label class="cursor-pointer flex flex-col items-center justify-center gap-2">
-                            <span class="bg-white border border-brand-200 text-brand-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm hover:bg-brand-50 transition">📷 画像を選択</span>
+                            <span class="bg-white border border-brand-200 text-brand-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm hover:bg-brand-50 transition">画像を選択</span>
                             <input type="file" id="photoInput" accept="image/*" class="hidden" onchange="handlePhotoUpload(this)">
                             <span id="photoFileName" class="text-[10px] text-gray-400">Before/Afterや姿勢写真など</span>
                         </label>
@@ -287,6 +287,10 @@
                     <h3 class="text-sm font-bold text-brand-600 uppercase tracking-wide mb-3 border-b border-brand-100 pb-1">⑥ 宿題ストレッチ</h3>
                     <div id="stretchSelectionArea" class="space-y-4">
                         <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-xs font-bold mb-1 text-gray-500">自由記述（任意）</label>
+                        <textarea id="customStretch" class="w-full border border-gray-300 rounded p-2 text-sm h-20 focus:ring-2 focus:ring-brand-500 outline-none resize-none" placeholder="フォーマット以外の宿題やストレッチを自由に記載できます..." oninput="updateUI()"></textarea>
                     </div>
                 </section>
 
@@ -411,7 +415,6 @@
                     <!-- 5. Home Work (Stretches) -->
                     <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white p-6 pb-8 min-h-[200px]">
                         <div class="flex items-center justify-center gap-2 mb-6">
-                            <span class="text-lg bg-white/20 w-8 h-8 flex items-center justify-center rounded-full text-white">🧘‍♀️</span>
                             <h4 class="font-bold tracking-[0.2em] text-sm text-brand-100">HOME CARE</h4>
                         </div>
                         
@@ -451,7 +454,7 @@
 
                         <div class="mt-8 text-center border-t border-white/10 pt-4">
                              <p class="text-[10px] text-brand-200 opacity-90">
-                                美しさは日々の積み重ねから✨<br>
+                                美しさは日々の積み重ねから<br>
                                 ご不明点はLINEにていつでもご相談ください。
                             </p>
                         </div>
@@ -504,81 +507,81 @@
                 {
                     id: "p1",
                     title: "胸筋・二頭筋ストレッチ",
-                    icon: "👐",
+                    iconRemoved: "👐",
                     text: "①壁の横に立つ ②壁側の手を斜め後ろ上につく ③体を反対側に向けて胸や腕を伸ばす (15秒)"
                 },
                 {
                     id: "p2",
                     title: "前鋸筋ストレッチ(壁)",
-                    icon: "🧱",
+                    iconRemoved: "🧱",
                     text: "①手を真上に伸ばす ②体を壁に密着させ、手のひらを前に向ける ③腕を真上に上げて脇の下を伸ばす"
                 },
                 {
                     id: "p3",
                     title: "上腕三頭筋ストレッチ",
-                    icon: "💪",
+                    iconRemoved: "💪",
                     text: "①肘を後に曲げる ②腕の位置は耳よりやや後ろへ ③二の腕や脇を伸ばす"
                 },
                 {
                     id: "p4",
                     title: "肩回しエクササイズ",
-                    icon: "🔄",
+                    iconRemoved: "🔄",
                     text: "①手を肩に置く ②大きく後ろから前へ回す ③反対回しも行う (ゴリゴリ鳴る場合はゆっくり動かす)"
                 },
                 {
                     id: "p5",
                     title: "巻き肩ケア",
-                    icon: "🥐",
+                    iconRemoved: "🥐",
                     text: "①肘を曲げ、上腕を脇につける ②前腕部分だけ後ろ回しをする (後ろの肩周りに効いていればOK)"
                 },
                 // Added Posture Items
                 {
                     id: "p_scapula",
                     title: "肩甲骨ケア",
-                    icon: "🦋",
+                    iconRemoved: "🦋",
                     text: "①胸を開き肩甲骨を寄せる<br>②ゆっくり5秒キープして力を抜く<br>③5回"
                 },
                 {
                     id: "p_balance",
                     title: "バランス・体幹",
-                    icon: "🏄",
+                    iconRemoved: "🏄",
                     text: "・プランク→うつ伏せになり肘と足のつま先で支える頭からかかとまで一直線、腰を反らないように<br>・タオルギャザー→床にタオルを置き両足の指を使って手繰り寄せる<br>・デッドバグ→仰向けになり両手足を天井に上げ左右対称に上げ下げする"
                 },
                 {
                     id: "p_roll",
                     title: "巻き肩(壁)",
-                    icon: "🐌",
+                    iconRemoved: "🐌",
                     text: "壁を使ってストレッチ"
                 },
                 {
                     id: "p_neck",
                     title: "ストレートネック",
-                    icon: "📱",
+                    iconRemoved: "📱",
                     text: "真上を向く"
                 },
                 {
                     id: "p_hunch",
                     title: "猫背リセット",
-                    icon: "🐈",
+                    iconRemoved: "🐈",
                     text: "腕を後ろにして背中を縮めてからリラックス"
                 },
                 {
                     id: "p_wing",
                     title: "肩甲骨出し",
-                    icon: "👼",
+                    iconRemoved: "👼",
                     text: "バンザイをしてから背中で肘をつけるイメージでギュッと３秒力を入れてバンザイ"
                 },
                 {
                     id: "p_cold",
                     title: "手先の冷え",
-                    icon: "🧤",
+                    iconRemoved: "🧤",
                     text: "湯船に浸かっている状態で手をグーパーしてください。"
                 },
                 // Added new items
                 {
                     id: "p_shoulder_shrug",
                     title: "肩周りケア",
-                    icon: "🤷",
+                    iconRemoved: "🤷",
                     text: "・肩をすくめる<br>・ストンと力を抜く<br>・10回"
                 }
             ],
@@ -586,74 +589,74 @@
                 {
                     id: "l1",
                     title: "お尻ストレッチ(椅子)",
-                    icon: "🪑",
+                    iconRemoved: "🪑",
                     text: "①椅子に座り片足を上げる ②足首を反対の膝上に置く ③背筋を伸ばし上半身を前へ倒す"
                 },
                 {
                     id: "l2",
                     title: "お尻ストレッチ(床)",
-                    icon: "🧘",
+                    iconRemoved: "🧘",
                     text: "①椅子と同じ足の形を作る ②立てている膝を自分の方へ抱き寄せてお尻を伸ばす"
                 },
                 {
                     id: "l3",
                     title: "裏モモ伸ばし",
-                    icon: "🦶",
+                    iconRemoved: "🦶",
                     text: "①片足を台に乗せる ②膝を伸ばし足首を最大に曲げる ③膝が曲がらないよう体を前に倒す"
                 },
                 {
                     id: "l4",
                     title: "内腿ほぐし",
-                    icon: "🦵",
+                    iconRemoved: "🦵",
                     text: "①あぐらの状態で内腿を触る ②手のひらで内腿を覆い、体重をかけて押圧する"
                 },
                 {
                     id: "l_calf",
                     title: "ふくらはぎ",
-                    icon: "🦵",
+                    iconRemoved: "🦵",
                     text: "①壁や椅子につかまり、かかとをゆっくり上げ下げする<br>②反動を使わず、ゆっくり行う<br>③10回×2セット"
                 },
                 {
                     id: "l_pelvis",
                     title: "骨盤の歪み",
-                    icon: "⚖️",
+                    iconRemoved: "⚖️",
                     text: "・骨盤ゆらし→①仰向けで寝る。②腰幅に足を開く。③呼吸しながら足先をワイパーのように動かす。<br>・骨盤体操→①椅子に浅く座る。②腰幅に足を開く。③腰に手をやり、胸や背中一直線にし背中を曲げる、戻す事で骨盤をしっかり動かす。<br>・ブリッジ→①仰向けで膝を立てる。②背中〜お尻一直線意識し持ち上げる。"
                 },
                 {
                     id: "l_hip",
                     title: "股関節の歪み",
-                    icon: "🦴",
+                    iconRemoved: "🦴",
                     text: "・①仰向けね寝る。②片膝を抱え肩の方向に引き寄せる。③反対も行う。10〜15秒。<br>・①両膝を立て左右に倒す、まわす等。10回<br>・①階段1段くらいの高さで良いので片足を伸ばした状態でかかとをつける...（かかとから足裏にかけて伸びを感じたらok）"
                 },
                 {
                     id: "l_lower",
                     title: "下半身ケア",
-                    icon: "👖",
+                    iconRemoved: "👖",
                     text: "・スクワット、有酸素運動→ ①足を肩幅に広げる。②背筋を伸ばし、お尻を後ろに引くようにしゃがむ。③かかとで床を押しながらゆっくり上がる。<br>・もも前(クワドストレッチ)→①片足で立ちあげた足の足首か爪先を持ちお尻に向けて曲げて10秒キープ"
                 },
                 {
                     id: "l_swelling",
                     title: "足のむくみ・冷え",
-                    icon: "👣",
+                    iconRemoved: "👣",
                     text: "・つま先立ち運動→体一直線にしかかとを上げ下げやキープする<br>・足の指に手の指を入れまわす、伸ばす、曲げる<br>・膝窩をテニスボール等で流す"
                 },
                 // Added new items
                 {
                     id: "l_hip_lift",
                     title: "ヒップリフト",
-                    icon: "🆙",
+                    iconRemoved: "🆙",
                     text: "・仰向けでひざを立て、お尻を持ち上げる<br>・肩から膝が一直線になるように<br>・10回"
                 },
                 {
                     id: "l_chair_squat",
                     title: "椅子スクワット",
-                    icon: "🪑",
+                    iconRemoved: "🪑",
                     text: "・椅子に座る、立つを繰り返す<br>・膝はつま先より前に出しすぎない<br>・10回"
                 },
                 {
                     id: "l_inner_thigh",
                     title: "内ももトレ",
-                    icon: "🦵",
+                    iconRemoved: "🦵",
                     text: "・膝にクッションを挟む<br>・ぎゅっと締めて5秒キープ<br>・10回"
                 }
             ],
@@ -661,62 +664,62 @@
                 {
                     id: "f1",
                     title: "鎖骨・首ストレッチ",
-                    icon: "🦢",
+                    iconRemoved: "🦢",
                     text: "①両手で鎖骨を下に引く ②首を後ろへ倒す ③口を「ウ」の形にして15秒キープ"
                 },
                 {
                     id: "f2",
                     title: "咬筋（食いしばり）ケア",
-                    icon: "😬",
+                    iconRemoved: "😬",
                     text: "①噛み締めると硬くなる部分(咬筋)を指で押さえる ②ゆっくり小刻みに揺らして緩める"
                 },
                 {
                     id: "f3",
                     title: "耳回し",
-                    icon: "👂",
+                    iconRemoved: "👂",
                     text: "①耳を持つ ②横にゆっくり引っ張ったり、回したりする (顔の血流UP)"
                 },
                 {
                     id: "f4",
                     title: "後頭下筋リリース",
-                    icon: "🛌",
+                    iconRemoved: "🛌",
                     text: "①仰向けで寝る ②後頭部のくぼみ(後頭下筋)に手を置く ③顎を少し上げゆっくり深呼吸"
                 },
                 {
                     id: "f_swelling",
                     title: "顔のむくみ",
-                    icon: "💧",
+                    iconRemoved: "💧",
                     text: "オイルやクリームを首筋に塗って頂き、首筋からフェイスラインに流すようにマッサージしてみてください。"
                 },
                 {
                     id: "f_square",
                     title: "エラ張りケア",
-                    icon: "📐",
+                    iconRemoved: "📐",
                     text: "手をぐーにして頬骨の下に当て口を軽く開けながら奥の筋肉をほぐすように左右に動かしながらほぐしていきましょう。"
                 },
                 {
                     id: "f_double",
                     title: "二重顎ケア",
-                    icon: "🆙",
+                    iconRemoved: "🆙",
                     text: "①顎先をなるべく天井に向けて上を向く ②喉から首が伸びているのを感じるくらい伸ばし20秒くらい続ける"
                 },
                 {
                     id: "f_eye",
                     title: "目の左右差",
-                    icon: "👁️",
+                    iconRemoved: "👁️",
                     text: "①耳の上に4本指を当て前回し30秒、後ろ回し30秒<br>②耳をチョキの指で根元から挟み大きく後ろ回し30秒、前回し30秒<br>③下がっている方の頬骨の下に手根を当てて斜め上に押し上げ(30秒)"
                 },
                 {
                     id: "f_width",
                     title: "顔の横幅ケア",
-                    icon: "↔️",
+                    iconRemoved: "↔️",
                     text: "①手をグーにして、頬骨の下に関節を当てて20秒押す<br>②頬骨に沿って内側に移動し、20秒押す<br>③手根を頬骨に当てて、両サイドからじんわり押す<br>④更に内側にずらし押す"
                 },
                 // Added new items
                 {
                     id: "f_neck_nod",
                     title: "首ストレッチ",
-                    icon: "🐢",
+                    iconRemoved: "🐢",
                     text: "・背筋を伸ばして座る<br>・ゆっくり頷くように、顎を軽く引く<br>・元に戻す(10回)"
                 }
             ]
@@ -838,7 +841,7 @@
                     <label class="flex items-start space-x-2 p-2 rounded hover:bg-brand-50 cursor-pointer text-xs border border-transparent hover:border-brand-100 transition">
                         <input type="checkbox" class="stretch-check mt-1 form-checkbox text-brand-600 rounded focus:ring-brand-500 accent-brand-500" value="${key}-${s.id}" onchange="updateUI()">
                         <div>
-                            <span class="font-bold text-gray-700 block flex items-center gap-1">${s.icon} ${s.title}</span>
+                            <span class="font-bold text-gray-700 block">${s.title}</span>
                             <span class="text-[10px] text-gray-400 truncate block mt-0.5">${s.text.replace(/<br>/g, ' ').substring(0, 30)}...</span>
                         </div>
                     </label>
@@ -883,7 +886,7 @@
                     labels: ['姿勢', '骨盤', '顔・頭', '代謝・巡り', '柔軟・バランス'],
                     datasets: [{
                         label: 'Condition',
-                        data: [3, 3, 3, 3, 3],
+                        data: [0, 0, 0, 0, 0],
                         backgroundColor: 'rgba(108, 168, 138, 0.4)', 
                         borderColor: '#6ca88a', 
                         pointBackgroundColor: '#fff',
@@ -904,7 +907,7 @@
                             pointLabels: {
                                 font: {
                                     size: 10,
-                                    family: "'Zen Kaku Gothic New', sans-serif",
+                                    family: "'M PLUS 1p', sans-serif",
                                     weight: 'bold'
                                 },
                                 color: '#52856d'
@@ -966,7 +969,7 @@
                 menuChecks.forEach(cb => {
                     const span = document.createElement('div');
                     span.className = 'px-4 py-2 bg-brand-100 text-brand-800 text-sm rounded-lg border-2 border-brand-200 font-bold shadow-sm flex items-center gap-2';
-                    span.innerHTML = `<span class="text-brand-500">✔</span> ${cb.value}`;
+                    span.innerHTML = `${cb.value}`;
                     menuContainer.appendChild(span);
                 });
             }
@@ -979,10 +982,12 @@
             const stretchContainer = document.getElementById('previewStretches');
             stretchContainer.innerHTML = '';
             const stretchChecks = document.querySelectorAll('.stretch-check:checked');
-            
-            if (stretchChecks.length === 0) {
+            const customStretchText = document.getElementById('customStretch').value.trim();
+
+            if (stretchChecks.length === 0 && !customStretchText) {
                 stretchContainer.innerHTML = '<p class="text-xs text-brand-100 text-center opacity-70">本日の特別な宿題はありません<br>水分をしっかり摂って休みましょう</p>';
             } else {
+                // Add selected stretches from checkboxes
                 stretchChecks.forEach(cb => {
                     const [cat, id] = cb.value.split('-');
                     const data = stretchData[cat].find(s => s.id === id);
@@ -990,8 +995,7 @@
                         const div = document.createElement('div');
                         div.className = 'bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/30 shadow-sm';
                         div.innerHTML = `
-                            <div class="flex items-center gap-3 mb-2 border-b border-white/20 pb-2">
-                                <span class="text-xl bg-white text-brand-600 w-8 h-8 flex items-center justify-center rounded-full shadow-sm">${data.icon}</span>
+                            <div class="mb-2 border-b border-white/20 pb-2">
                                 <h5 class="font-bold text-sm text-white tracking-wide">${data.title}</h5>
                             </div>
                             <p class="text-xs text-brand-50 leading-relaxed opacity-95">
@@ -1001,6 +1005,21 @@
                         stretchContainer.appendChild(div);
                     }
                 });
+
+                // Add custom stretch if provided
+                if (customStretchText) {
+                    const div = document.createElement('div');
+                    div.className = 'bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/30 shadow-sm';
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3 mb-2 border-b border-white/20 pb-2">
+                            <h5 class="font-bold text-sm text-white tracking-wide">その他の宿題</h5>
+                        </div>
+                        <p class="text-xs text-brand-50 leading-relaxed opacity-95 whitespace-pre-wrap">
+                            ${customStretchText}
+                        </p>
+                    `;
+                    stretchContainer.appendChild(div);
+                }
             }
 
             // 7. Coupon Logic (Updated)
@@ -1053,8 +1072,9 @@
             if(confirm('入力をリセットしますか？')) {
                 document.getElementById('customerName').value = '';
                 document.getElementById('coachComment').value = '';
+                document.getElementById('customStretch').value = '';
                 document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-                document.querySelectorAll('input[type="range"]').forEach(r => r.value = 3);
+                document.querySelectorAll('input[type="range"]').forEach(r => r.value = 0);
                 // Reset Photo
                 clearPhoto();
                 // Reset Radio
@@ -1067,29 +1087,69 @@
         }
 
         // ==========================================
-        // DOWNLOAD IMAGE FUNCTION
+        // DOWNLOAD IMAGE FUNCTION (SPLIT INTO MAX 3 IMAGES)
         // ==========================================
         function downloadImage() {
             const element = document.getElementById('captureArea');
             const msg = document.getElementById('saveMsg');
-            
+
             msg.style.opacity = '1';
             msg.innerText = '生成中...';
 
             html2canvas(element, {
-                scale: 2, 
+                scale: 2,
                 backgroundColor: '#ffffff',
-                useCORS: true 
+                useCORS: true
             }).then(canvas => {
-                const link = document.createElement('a');
                 const name = document.getElementById('customerName').value || 'Customer';
                 const date = document.getElementById('visitDate').value || 'Date';
-                
-                link.download = `AfterCare_${name}_${date}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
 
-                msg.innerText = '保存しました！';
+                const totalHeight = canvas.height;
+                const maxHeightPerImage = 3000; // Maximum height per image (adjustable)
+
+                // Calculate number of splits needed (max 3)
+                let numSplits = Math.min(3, Math.ceil(totalHeight / maxHeightPerImage));
+
+                // If total height is reasonable, don't split
+                if (totalHeight <= maxHeightPerImage) {
+                    numSplits = 1;
+                }
+
+                const splitHeight = Math.ceil(totalHeight / numSplits);
+
+                // Create and download each split
+                for (let i = 0; i < numSplits; i++) {
+                    const splitCanvas = document.createElement('canvas');
+                    splitCanvas.width = canvas.width;
+
+                    // Calculate height for this split
+                    const startY = i * splitHeight;
+                    const currentHeight = Math.min(splitHeight, totalHeight - startY);
+                    splitCanvas.height = currentHeight;
+
+                    const ctx = splitCanvas.getContext('2d');
+                    ctx.drawImage(
+                        canvas,
+                        0, startY, canvas.width, currentHeight,  // source
+                        0, 0, canvas.width, currentHeight        // destination
+                    );
+
+                    // Download this split
+                    const link = document.createElement('a');
+                    const suffix = numSplits > 1 ? `_part${i + 1}of${numSplits}` : '';
+                    link.download = `AfterCare_${name}_${date}${suffix}.png`;
+                    link.href = splitCanvas.toDataURL('image/png');
+                    link.click();
+
+                    // Small delay between downloads
+                    if (i < numSplits - 1) {
+                        // Wait a bit before next download
+                        const delay = 300;
+                        setTimeout(() => {}, delay * (i + 1));
+                    }
+                }
+
+                msg.innerText = numSplits > 1 ? `${numSplits}枚保存しました！` : '保存しました！';
                 setTimeout(() => {
                     msg.style.opacity = '0';
                 }, 2000);
